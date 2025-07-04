@@ -2,11 +2,11 @@
 if (!isset($title)) {
     $title = 'Default Title';
 }
-include __DIR__ . '/layout/header.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/Arunika/view/user/layout/header.php';
 ?>
 <!-- CONTENT -->
 <div id="content">
     <?php if (isset($content)) { echo $content; } ?>
 </div>
 <!-- END CONTENT -->
-<?php include __DIR__ . '/layout/footer.php'; ?>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/Arunika/view/user/layout/footer.php'; ?>

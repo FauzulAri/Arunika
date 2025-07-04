@@ -79,7 +79,7 @@
                             <i class="fa fa-shopping-cart" style="font-size: 2rem;"></i>
                         </a>
                     <?php else: ?>
-                        <a href="../../auth/login.php" class="btn btn-login-custom">Login</a>
+                        <a href="/Arunika/auth/login.php" class="btn btn-login-custom">Login</a>
                     <?php endif; ?>
                 </div>
             </div>

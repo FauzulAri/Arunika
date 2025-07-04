@@ -26,7 +26,7 @@ ob_start();
             </div>
             <div class="hero2-feature-col-img">
                 <div class="hero2-feature-img-v2">
-                    <img src="../../../assets/img/planning.jpg" alt="Desain Personal">
+                    <img src="/Arunika/assets/img/planning.jpg" alt="Desain Personal">
                 </div>
             </div>
         </div>
@@ -42,11 +42,11 @@ ob_start();
             <div class="hero2-feature-col-img">
                 <div class="hero2-feature-img-v2 grid grid-custom">
                     <div class="grid-vertical">
-                        <img src="../../../assets/img/interior1.jpg" alt="Grid 1" class="img-vertical">
+                        <img src="/Arunika/assets/img/interior1.jpg" alt="Grid 1" class="img-vertical">
                     </div>
                     <div class="grid-right">
-                        <img src="../../../assets/img/interior2.jpg" alt="Grid 2">
-                        <img src="../../../assets/img/interior3.jpeg" alt="Grid 4">
+                        <img src="/Arunika/assets/img/interior2.jpg" alt="Grid 2">
+                        <img src="/Arunika/assets/img/interior3.jpeg" alt="Grid 4">
                     </div>
                 </div>
             </div>
@@ -63,8 +63,8 @@ ob_start();
             <div class="hero2-feature-col-img">
                 <div class="hero2-feature-img-v2 grid grid-custom feature3">
                     <div class="grid-vertical">
-                        <img src="../../../assets/img/interior4.jpeg" alt="Grid 5" class="img-vertical">
-                        <img src="../../../assets/img/interior5.jpg" alt="Grid 6"  class="img-vertical">
+                        <img src="/Arunika/assets/img/interior4.jpeg" alt="Grid 5" class="img-vertical">
+                        <img src="/Arunika/assets/img/interior5.jpg" alt="Grid 6"  class="img-vertical">
                     </div>
                 </div>
             </div>
@@ -113,7 +113,7 @@ ob_start();
     <div class="hero4-slider-wrapper">
         <button class="hero4-arrow hero4-arrow-left"><i class="fa fa-arrow-left"></i></button>
         <div class="hero4-slider-img-container">
-            <img src="../../../assets/img/glam1.jpg" alt="Hollywood glam" class="hero4-slider-img">
+            <img src="/Arunika/assets/img/glam1.jpg" alt="Hollywood glam" class="hero4-slider-img">
         </div>
         <button class="hero4-arrow hero4-arrow-right"><i class="fa fa-arrow-right"></i></button>
     </div>
@@ -128,7 +128,7 @@ ob_start();
         <div class="hero5-slider" id="hero5-slider">
             <!-- Card 1 -->
             <div class="hero5-card fade show">
-                <img src="../../../assets/img/user1.jpg" alt="Senja Pradipa" class="hero5-user-img">
+                <img src="/Arunika/assets/img/user1.jpg" alt="Senja Pradipa" class="hero5-user-img">
                 <div class="hero5-user-name">Senja Pradipa</div>
                 <div class="hero5-rating">★★★★★</div>
                 <div class="hero5-card-title">Profesional, cepat, dan penuh ide</div>
@@ -136,7 +136,7 @@ ob_start();
             </div>
             <!-- Card 2 -->
             <div class="hero5-card fade show">
-                <img src="../../../assets/img/user2.jpg" alt="Aulia Rachma" class="hero5-user-img">
+                <img src="/Arunika/assets/img/user2.jpg" alt="Aulia Rachma" class="hero5-user-img">
                 <div class="hero5-user-name">Aulia Rachma</div>
                 <div class="hero5-rating">★★★★★</div>
                 <div class="hero5-card-title">Desainnya bikin jatuh cinta!</div>
@@ -144,7 +144,7 @@ ob_start();
             </div>
             <!-- Card 3 -->
             <div class="hero5-card fade show">
-                <img src="../../../assets/img/user3.jpg" alt="Maria Lestari" class="hero5-user-img">
+                <img src="/Arunika/assets/img/user3.jpg" alt="Maria Lestari" class="hero5-user-img">
                 <div class="hero5-user-name">Maria Lestari</div>
                 <div class="hero5-rating">★★★★★</div>
                 <div class="hero5-card-title">Pengalaman luar biasa!</div>
@@ -152,7 +152,7 @@ ob_start();
             </div>
             <!-- Card 4 -->
             <div class="hero5-card fade show">
-                <img src="../../../assets/img/user4.jpg" alt="Raka Wijaya" class="hero5-user-img">
+                <img src="/Arunika/assets/img/user4.jpg" alt="Raka Wijaya" class="hero5-user-img">
                 <div class="hero5-user-name">Raka Wijaya</div>
                 <div class="hero5-rating">★★★★★</div>
                 <div class="hero5-card-title">Desain modern, proses fleksibel</div>
@@ -188,5 +188,5 @@ window.addEventListener('DOMContentLoaded', () => {
 
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/../master.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/Arunika/view/user/master.php';
 ?>

@@ -1,5 +1,5 @@
 <?php
-include_once '../config/connect.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 session_start();
 
 // Mengambil data dari form pendaftaran pengguna
@@ -35,7 +35,7 @@ $stmt = $conn->prepare("INSERT INTO user (nama, email, password, tanggal_daftar)
 $stmt->bind_param("ssss", $nama, $email, $hashed_password, $tanggal_daftar);
 
 if ($stmt->execute()) {
-    echo "<script>alert('Registrasi berhasil! Silakan login.'); window.location.href='../view/auth/login.php';</script>";
+    echo "<script>alert('Registrasi berhasil! Silakan login.'); window.location.href='/Arunika/view/auth/login.php';</script>";
 } else {
     echo "Error: " . $stmt->error;
 }

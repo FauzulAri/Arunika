@@ -14,9 +14,9 @@ ob_start();
             <div class="designer-grid-section">
                 <div class="designer-grid">
                     <div class="designer-card active">
-                        <img src="../../../assets/img/interior1.jpg" class="designer-img" alt="Ghianella">
+                        <img src="/Arunika/assets/img/interior1.jpg" class="designer-img" alt="Ghianella">
                         <div class="designer-info">
-                            <img src="../../../assets/img/person1.jpg" class="designer-avatar" alt="Ghianella">
+                            <img src="/Arunika/assets/img/person1.jpg" class="designer-avatar" alt="Ghianella">
                             <div>
                                 <div class="designer-name">Ghianella</div>
                                 <div class="designer-status">Taking on projects this week</div>
@@ -24,9 +24,9 @@ ob_start();
                         </div>
                     </div>
                     <div class="designer-card inactive">
-                        <img src="../../../assets/img/interior2.jpg" class="designer-img" alt="Freddi">
+                        <img src="/Arunika/assets/img/interior2.jpg" class="designer-img" alt="Freddi">
                         <div class="designer-info">
-                            <img src="../../../assets/img/person2.jpg" class="designer-avatar" alt="Freddi">
+                            <img src="/Arunika/assets/img/person2.jpg" class="designer-avatar" alt="Freddi">
                             <div>
                                 <div class="designer-name">Freddi</div>
                                 <div class="designer-status">Taking on projects this week</div>
@@ -34,9 +34,9 @@ ob_start();
                         </div>
                     </div>
                     <div class="designer-card inactive">
-                        <img src="../../../assets/img/interior3.jpeg" class="designer-img" alt="Jordan">
+                        <img src="/Arunika/assets/img/interior3.jpeg" class="designer-img" alt="Jordan">
                         <div class="designer-info">
-                            <img src="../../../assets/img/person3.jpg" class="designer-avatar" alt="Jordan">
+                            <img src="/Arunika/assets/img/person3.jpg" class="designer-avatar" alt="Jordan">
                             <div>
                                 <div class="designer-name">Jordan</div>
                                 <div class="designer-status">Taking on projects this week</div>
@@ -44,9 +44,9 @@ ob_start();
                         </div>
                     </div>
                     <div class="designer-card inactive">
-                        <img src="../../../assets/img/interior4.jpeg" class="designer-img" alt="Emmanuel">
+                        <img src="/Arunika/assets/img/interior4.jpeg" class="designer-img" alt="Emmanuel">
                         <div class="designer-info">
-                            <img src="../../../assets/img/person4.jpg" class="designer-avatar" alt="Emmanuel">
+                            <img src="/Arunika/assets/img/person4.jpg" class="designer-avatar" alt="Emmanuel">
                             <div>
                                 <div class="designer-name">Emmanuel</div>
                                 <div class="designer-status">Taking on projects this week</div>
@@ -71,18 +71,18 @@ ob_start();
             <div class="step-desc">Sampaikan detail kebutuhan dan inspirasi ruang impian Anda kepada desainer kami. Kami akan membantu mewujudkan visi Anda dengan solusi terbaik.</div>
         </div>
         <div class="step2-img-col">
-            <img src="../../../assets/img/interior5.jpg" class="step2-img-slider active" alt="Preview 1">
-            <img src="../../../assets/img/interior6.jpg" class="step2-img-slider" alt="Preview 2">
-            <img src="../../../assets/img/flower1.jpg" class="step2-img-slider" alt="Preview 3">
+            <img src="/Arunika/assets/img/interior5.jpg" class="step2-img-slider active" alt="Preview 1">
+            <img src="/Arunika/assets/img/interior6.jpg" class="step2-img-slider" alt="Preview 2">
+            <img src="/Arunika/assets/img/flower1.jpg" class="step2-img-slider" alt="Preview 3">
         </div>
     </div>
 </div>
 <div class="step-section">
     <div class="step-row">
         <div class="step3-img-col">
-            <img src="../../../assets/img/interior2.jpg" class="step3-img-slider active" alt="Step 3 Preview 1">
-            <img src="../../../assets/img/interior3.jpeg" class="step3-img-slider inactive" alt="Step 3 Preview 2">
-            <img src="../../../assets/img/interior4.jpeg" class="step3-img-slider inactive" alt="Step 3 Preview 3">
+            <img src="/Arunika/assets/img/interior2.jpg" class="step3-img-slider active" alt="Step 3 Preview 1">
+            <img src="/Arunika/assets/img/interior3.jpeg" class="step3-img-slider inactive" alt="Step 3 Preview 2">
+            <img src="/Arunika/assets/img/interior4.jpeg" class="step3-img-slider inactive" alt="Step 3 Preview 3">
         </div>
         <div class="step-text-col">
             <div class="step-label">STEP 3</div>
@@ -100,8 +100,8 @@ ob_start();
         </div>
         <div class="step4-img-col">
             <div class="step4-beforeafter-wrapper">
-                <img src="../../../assets/img/interior1.jpg" class="step4-img-before" alt="Before">
-                <img src="../../../assets/img/interior2.jpg" class="step4-img-after" alt="After">
+                <img src="/Arunika/assets/img/interior1.jpg" class="step4-img-before" alt="Before">
+                <img src="/Arunika/assets/img/interior2.jpg" class="step4-img-after" alt="After">
                 <div class="step4-vertical-bar"></div>
             </div>
         </div>
@@ -203,5 +203,5 @@ animateBeforeAfter();
 </script>
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/../master.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/Arunika/view/user/master.php';
 ?>

@@ -4,7 +4,7 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: /Arunika/view/auth/login.php');
     exit();
 }
-include_once '../config/connect.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 
 $user_id = $_SESSION['user_id'];
 $nama = trim($_POST['nama']);
@@ -33,7 +33,7 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
     $allowed_ext = ['jpg', 'jpeg', 'png'];
     if (in_array($file_ext, $allowed_ext)) {
         $foto_nama = 'user_' . $user_id . '_' . time() . '.' . $file_ext;
-        $target_dir = __DIR__ . '/../assets/img/profile/';
+        $target_dir = $_SERVER['DOCUMENT_ROOT'] . '/Arunika/assets/img/profile/';
         if (!is_dir($target_dir)) {
             mkdir($target_dir, 0777, true);
         }

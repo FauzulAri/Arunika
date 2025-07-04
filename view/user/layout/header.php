@@ -3,7 +3,7 @@
         session_start();
     }
     // Selalu include koneksi di sini
-    include_once __DIR__ . '/../../../config/connect.php';
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 ?>
 
 <!DOCTYPE html>

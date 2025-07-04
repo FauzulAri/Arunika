@@ -98,5 +98,5 @@ ob_start();
 </div>
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/../layout/../master.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/Arunika/view/user/master.php';
 ?> 

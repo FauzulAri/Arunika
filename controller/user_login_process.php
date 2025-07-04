@@ -1,5 +1,5 @@
 <?php
-include ('../config/connect.php');
+include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 
 // Mengecek apakah form login telah disubmit
 if (isset($_POST['email']) && isset($_POST['password'])) {

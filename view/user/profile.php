@@ -4,7 +4,7 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: /Arunika/view/auth/login.php');
     exit();
 }
-include_once __DIR__ . '/../../config/connect.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 $user_id = $_SESSION['user_id'];
 
 // Ambil data user dari database
@@ -58,7 +58,7 @@ ob_start();
 </div>
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/master.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/Arunika/view/user/master.php';
 ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {

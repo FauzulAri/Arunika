@@ -8,7 +8,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 $user_id = $_SESSION['user_id'];
 
 // Ambil data user dari database
-$stmt = $conn->prepare('SELECT nama, email, alamat, foto, tanggal_daftar FROM user WHERE user_id = ?');
+$stmt = $conn->prepare('SELECT nama, email, alamat, foto, tanggal_daftar FROM User WHERE user_id = ?');
 $stmt->bind_param('i', $user_id);
 $stmt->execute();
 $stmt->bind_result($nama, $email, $alamat, $foto, $tanggal_daftar);

@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 session_start();
 
@@ -31,8 +35,11 @@ if ($stmt_cek->num_rows > 0) {
 $stmt_cek->close();
 
 // Insert user baru
-$stmt = $conn->prepare("INSERT INTO user (nama, email, password, tanggal_daftar) VALUES (?, ?, ?, ?)");
-$stmt->bind_param("ssss", $nama, $email, $hashed_password, $tanggal_daftar);
+$role = 'user'; // default role
+$foto = null;   // default foto
+
+$stmt = $conn->prepare("INSERT INTO user (nama, email, password, role, foto, tanggal_daftar) VALUES (?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("ssssss", $nama, $email, $hashed_password, $role, $foto, $tanggal_daftar);
 
 if ($stmt->execute()) {
     echo "<script>alert('Registrasi berhasil! Silakan login.'); window.location.href='/Arunika/view/auth/login.php';</script>";

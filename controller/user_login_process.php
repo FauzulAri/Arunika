@@ -27,7 +27,8 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
             $_SESSION['nama'] = $nama;
             $_SESSION['email'] = $email;
             $_SESSION['role'] = $role;
-            echo "<script>alert('Selamat datang $nama!'); window.location='/Arunika/view/user/home/index.php';</script>";
+            header('Location: /Arunika/view/user/home/index.php');
+            exit();
         } else {
             echo "<script>alert('Email atau kata sandi salah!'); window.location='/Arunika/view/auth/login.php';</script>";
         }

@@ -23,7 +23,7 @@ if ($password !== $konfirmasi_password) {
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 // Cek email sudah terdaftar
-$stmt_cek = $conn->prepare("SELECT user_id FROM user WHERE email = ?");
+$stmt_cek = $conn->prepare("SELECT user_id FROM User WHERE email = ?");
 $stmt_cek->bind_param("s", $email);
 $stmt_cek->execute();
 $stmt_cek->store_result();
@@ -38,7 +38,7 @@ $stmt_cek->close();
 $role = 'user'; // default role
 $foto = null;   // default foto
 
-$stmt = $conn->prepare("INSERT INTO user (nama, email, password, role, foto, tanggal_daftar) VALUES (?, ?, ?, ?, ?, ?)");
+$stmt = $conn->prepare("INSERT INTO User (nama, email, password, role, foto, tanggal_daftar) VALUES (?, ?, ?, ?, ?, ?)");
 $stmt->bind_param("ssssss", $nama, $email, $hashed_password, $role, $foto, $tanggal_daftar);
 
 if ($stmt->execute()) {

@@ -7,7 +7,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     $password = $_POST['password'];
 
     // Menggunakan prepared statements untuk mencegah SQL injection
-    $stmt = $conn->prepare("SELECT user_id, nama, email, password, role FROM user WHERE email = ?");
+    $stmt = $conn->prepare("SELECT user_id, nama, email, password, role FROM User WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();

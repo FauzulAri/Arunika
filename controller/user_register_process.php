@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 session_start();
@@ -42,7 +39,8 @@ $stmt = $conn->prepare("INSERT INTO User (nama, email, password, role, foto, tan
 $stmt->bind_param("ssssss", $nama, $email, $hashed_password, $role, $foto, $tanggal_daftar);
 
 if ($stmt->execute()) {
-    echo "<script>alert('Registrasi berhasil! Silakan login.'); window.location.href='/Arunika/view/auth/login.php';</script>";
+    header('Location: /index.php');
+    exit();
 } else {
     echo "Error: " . $stmt->error;
 }

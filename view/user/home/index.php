@@ -5,9 +5,9 @@ ob_start();
 
 <div class="hero-section">
     <div class="hero-content">
-        <div class="hero-title">Satu tempat untuk semua kebutuhan ruang anda</div>
+        <div class="hero-title">Satu tempat untuk semua kebutuhan ruang Anda</div>
         <div class="hero-subtitle">Dari perencanaan ruang hingga pemilihan furnitur, kami hadir untuk menghadirkan kenyamanan dan keindahan di setiap sudut hunian Anda.</div>
-        <a href="#" class="hero-btn">Get Started</a>
+        <a href="#" class="hero-btn">Mulai Sekarang</a>
     </div>
 </div>
 
@@ -124,7 +124,7 @@ ob_start();
 <div class="hero5-section">
     <div class="hero5-title">Ulasan Pengguna</div>
     <div class="hero5-slider-container">
-        <button class="hero5-nav hero5-nav-left" onclick="slideReview(-1)">sebelumnya</button>
+        <button class="hero5-nav hero5-nav-left" onclick="slideReview(-1)">Sebelumnya</button>
         <div class="hero5-slider" id="hero5-slider">
             <!-- Card 1 -->
             <div class="hero5-card fade show">
@@ -156,10 +156,10 @@ ob_start();
                 <div class="hero5-user-name">Raka Wijaya</div>
                 <div class="hero5-rating">★★★★★</div>
                 <div class="hero5-card-title">Desain modern, proses fleksibel</div>
-                <div class="hero5-card-desc">Saya sangat terbantu dengan sistem konsultasi online. Desain 3D yang ditampilkan benar-benar membantu saya membayangkan hasil akhir. Prosesnya juga fleksibel dan tidak ribet. Highly recommended!</div>
+                <div class="hero5-card-desc">Saya sangat terbantu dengan sistem konsultasi online. Desain 3D yang ditampilkan benar-benar membantu saya membayangkan hasil akhir. Prosesnya juga fleksibel dan tidak ribet. Sangat direkomendasikan!</div>
             </div>
         </div>
-        <button class="hero5-nav hero5-nav-right" onclick="slideReview(1)">selanjutnya</button>
+        <button class="hero5-nav hero5-nav-right" onclick="slideReview(1)">Selanjutnya</button>
     </div>
 </div>
 <script>

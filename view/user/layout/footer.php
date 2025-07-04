@@ -12,7 +12,7 @@
       </ul>
     </div>
     <div class="footer-col">
-      <div class="footer-title">Mengenal kami</div>
+      <div class="footer-title">Mengenal Kami</div>
       <ul>
         <li>FAQ</li>
         <li>Kebijakan Privasi</li>

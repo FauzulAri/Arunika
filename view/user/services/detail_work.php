@@ -100,8 +100,8 @@ ob_start();
         </div>
         <div class="step4-img-col">
             <div class="step4-beforeafter-wrapper">
-                <img src="/Arunika/assets/img/interior before.png" class="step4-img-before" alt="Before">
-                <img src="/Arunika/assets/img/interior after.png" class="step4-img-after" alt="After">
+                <img src="/Arunika/assets/img/interior after.png" class="step4-img-before" alt="Before">
+                <img src="/Arunika/assets/img/interior before.png" class="step4-img-after" alt="After">
                 <div class="step4-vertical-bar"></div>
             </div>
         </div>

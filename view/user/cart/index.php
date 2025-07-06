@@ -98,7 +98,7 @@ ob_start();
       </div>
     </div>
     <div class="col-lg-4">
-      <div class="card p-3 sticky-top" style="top:72px;">
+      <div class="card p-3 sticky-top mt-5" style="top:120px;">
         <h5 class="mb-3">Ringkasan belanja</h5>
         <div class="d-flex justify-content-between mb-2">
           <span>Total</span>
@@ -149,20 +149,35 @@ function updateTotal() {
   cartTotal.innerText = 'Rp' + total.toLocaleString('id-ID');
   checkoutBtn.disabled = (checked === 0);
 }
+
+// Update label jumlah jenis barang
+function updateJenisBarangLabel() {
+  const jenis = document.querySelectorAll('.cart-item').length;
+  const label = document.querySelector('label[for="select-all"]');
+  if(label) label.innerHTML = `Pilih Semua (${jenis})`;
+}
+
 selectAll && selectAll.addEventListener('change', function() {
   document.querySelectorAll('.cart-check').forEach(cb => cb.checked = this.checked);
   updateTotal();
 });
-document.querySelectorAll('.cart-check').forEach(cb => {
-  cb.addEventListener('change', function() {
-    let all = document.querySelectorAll('.cart-check').length;
-    let checked = document.querySelectorAll('.cart-check:checked').length;
-    selectAll.checked = (all === checked);
-    updateTotal();
+
+// Attach event handler checklist per-item (dan update label) setelah setiap refresh
+function attachChecklistEvents() {
+  document.querySelectorAll('.cart-check').forEach(cb => {
+    cb.addEventListener('change', function() {
+      let all = document.querySelectorAll('.cart-check').length;
+      let checked = document.querySelectorAll('.cart-check:checked').length;
+      selectAll.checked = (all === checked);
+      updateTotal();
+    });
   });
-});
-// Inisialisasi total
+  updateJenisBarangLabel();
+}
+
+// Inisialisasi total dan checklist event
 updateTotal();
+attachChecklistEvents();
 
 // --- AJAX KERANJANG ---
 function showToast(msg, type='success') {
@@ -173,8 +188,9 @@ function showToast(msg, type='success') {
   document.body.appendChild(toast);
   setTimeout(()=>{toast.classList.remove('show');toast.classList.add('fade');setTimeout(()=>toast.remove(),500);}, 2500);
 }
-// Update/minus/plus qty
+// Event delegation untuk qty plus/minus & delete
 cartList.addEventListener('click', async function(e) {
+  // Qty plus/minus
   if (e.target.closest('.qty-minus') || e.target.closest('.qty-plus')) {
     const btn = e.target.closest('button');
     const form = btn.closest('form');
@@ -193,6 +209,7 @@ cartList.addEventListener('click', async function(e) {
       qtyInput.value = data.jumlah;
       showToast(data.message, 'success');
       updateTotal();
+      attachChecklistEvents();
     }else{
       showToast(data.message, 'danger');
     }
@@ -214,6 +231,7 @@ cartList.addEventListener('click', async function(e) {
       btn.closest('.cart-item').remove();
       showToast(data.message, 'success');
       updateTotal();
+      attachChecklistEvents();
     }else{
       showToast(data.message, 'danger');
     }
@@ -233,7 +251,14 @@ rekomBtns.forEach(btn => {
     let data = await res.json();
     btn.disabled = false;
     showToast(data.message, data.success ? 'success' : 'danger');
-    // Tidak reload, user bisa lanjut belanja
+    if(data.success){
+      // Fetch ulang isi keranjang dan update DOM
+      let cartRes = await fetch('/Arunika/controller/keranjang_list_ajax.php');
+      let cartHtml = await cartRes.text();
+      cartList.innerHTML = cartHtml;
+      updateTotal();
+      attachChecklistEvents();
+    }
   });
 });
 </script>

@@ -77,5 +77,44 @@ document.addEventListener('DOMContentLoaded', function() {
             reader.readAsDataURL(input.files[0]);
         }
     });
+    // --- Lokasi otomatis untuk alamat ---
+    const alamatInput = document.getElementById('alamat');
+    if (alamatInput && !document.getElementById('btn-lokasi')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-outline-secondary btn-sm mb-2';
+      btn.id = 'btn-lokasi';
+      btn.innerHTML = '<i class="fa fa-map-marker-alt"></i> Isi Alamat Otomatis dari Lokasi Saya';
+      alamatInput.parentNode.insertBefore(btn, alamatInput);
+      btn.onclick = function() {
+        if (!navigator.geolocation) {
+          alert('Browser Anda tidak mendukung geolokasi.');
+          return;
+        }
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Mengambil lokasi...';
+        navigator.geolocation.getCurrentPosition(async function(pos) {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+            const data = await res.json();
+            if (data.display_name) {
+              alamatInput.value = data.display_name;
+            } else {
+              alert('Gagal mendapatkan alamat dari koordinat.');
+            }
+          } catch (e) {
+            alert('Gagal menghubungi layanan lokasi.');
+          }
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa fa-map-marker-alt"></i> Isi Alamat Otomatis dari Lokasi Saya';
+        }, function(err) {
+          alert('Gagal mendapatkan lokasi: ' + err.message);
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa fa-map-marker-alt"></i> Isi Alamat Otomatis dari Lokasi Saya';
+        });
+      };
+    }
 });
 </script> 

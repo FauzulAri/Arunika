@@ -117,7 +117,7 @@ ob_start();
               </div>
               <?php unset($_SESSION['message'], $_SESSION['message_type']); ?>
             <?php endif; ?>
-            <form method="post" action="/Arunika/controller/keranjang_add.php" id="form-keranjang" class="mb-2">
+            <form method="post" action="/Arunika/controller/keranjang_add_ajax.php" id="form-keranjang" class="mb-2">
               <input type="hidden" name="furniture_id" value="<?= $f['furniture_id'] ?>">
               <div class="d-flex align-items-center mb-2 gap-2">
                 <button type="button" class="btn btn-outline-secondary btn-sm" id="qty-minus">-</button>
@@ -217,6 +217,38 @@ if(btnToggleDesc){
       shortDiv.style.display = 'block';
       fullDiv.style.display = 'none';
       btnToggleDesc.innerText = 'Tampilkan Lebih Banyak';
+    }
+  });
+}
+// Tambah ke keranjang via AJAX
+const formKeranjang = document.getElementById('form-keranjang');
+if(formKeranjang){
+  formKeranjang.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const form = this;
+    const data = new FormData(form);
+    const btn = form.querySelector('button[type=submit]');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menambah...';
+    try {
+      const res = await fetch('/Arunika/controller/keranjang_add_ajax.php', {
+        method: 'POST',
+        body: data
+      });
+      const json = await res.json();
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-shopping-cart"></i> + Keranjang';
+      if(json.success){
+        alert(json.message); // Ganti dengan toast jika ada
+        form.jumlah.value = 1;
+        updateSubtotal();
+      }else{
+        alert(json.message); // Ganti dengan toast jika ada
+      }
+    } catch(err){
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-shopping-cart"></i> + Keranjang';
+      alert('Terjadi kesalahan. Coba lagi.');
     }
   });
 }

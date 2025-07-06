@@ -1,7 +1,8 @@
 <?php
 session_start();
+header('Content-Type: application/json');
 if (!isset($_SESSION['user_id'])) {
-    header('Location: /Arunika/view/auth/login.php');
+    echo json_encode(['success'=>false, 'message'=>'Silakan login terlebih dahulu!']);
     exit();
 }
 include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
@@ -14,18 +15,14 @@ $stmt->bind_param('i', $furniture_id);
 $stmt->execute();
 $res = $stmt->get_result();
 if ($res->num_rows < 1) {
-    $_SESSION['message'] = 'Produk tidak ditemukan atau tidak aktif!';
-    $_SESSION['message_type'] = 'danger';
-    header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/Arunika/index.php'));
+    echo json_encode(['success'=>false, 'message'=>'Produk tidak ditemukan atau tidak aktif!']);
     exit();
 }
 $row = $res->fetch_assoc();
 $harga = $row['harga'];
 $stok = $row['stok'];
 if ($jumlah > $stok) {
-    $_SESSION['message'] = 'Jumlah melebihi stok tersedia!';
-    $_SESSION['message_type'] = 'danger';
-    header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/Arunika/index.php'));
+    echo json_encode(['success'=>false, 'message'=>'Jumlah melebihi stok tersedia!']);
     exit();
 }
 // Cek apakah sudah ada di keranjang
@@ -49,11 +46,4 @@ if ($res2->num_rows > 0) {
     $stmt3->bind_param('iiidd', $user_id, $furniture_id, $jumlah, $harga, $subtotal);
     $stmt3->execute();
 }
-$_SESSION['message'] = 'Berhasil menambah ke keranjang!';
-$_SESSION['message_type'] = 'success';
-if (isset($_POST['beli_sekarang'])) {
-    header('Location: /Arunika/view/user/cart/index.php');
-} else {
-    header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/Arunika/index.php'));
-}
-exit(); 
+echo json_encode(['success'=>true, 'message'=>'Berhasil menambah ke keranjang!']); 

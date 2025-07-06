@@ -34,6 +34,32 @@
         .icon-badge { position: absolute; top: -6px; right: -8px; background: #e07b87; color: #fff; border-radius: 50%; font-size: 0.8rem; min-width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
         .dropdown-menu { min-width: 180px; }
         .sticky-top { z-index: 1030; }
+        .btn-pink {
+          background: #FEA5AD !important;
+          color: #fff !important;
+          border: none !important;
+          border-radius: 40px;
+          font-weight: 500;
+          padding: 0.5rem 1.5rem;
+          transition: background 0.2s;
+        }
+        .btn-pink:hover, .btn-pink:focus {
+          background: #e07b87 !important;
+          color: #fff !important;
+        }
+        .btn-outline-pink {
+          background: #fff !important;
+          color: #FEA5AD !important;
+          border: 2px solid #FEA5AD !important;
+          border-radius: 40px;
+          font-weight: 500;
+          padding: 0.5rem 1.5rem;
+          transition: background 0.2s, color 0.2s;
+        }
+        .btn-outline-pink:hover, .btn-outline-pink:focus {
+          background: #FEA5AD !important;
+          color: #fff !important;
+        }
     </style>
 </head>
 
@@ -72,8 +98,8 @@
                     </a>
                     <a href="#" class="icon-btn" title="Notifikasi"><i class="fa fa-bell fa-lg"></i></a>
                     <?php if (!isset($_SESSION['user_id'])): ?>
-                        <a href="/Arunika/view/auth/login.php" class="btn btn-light ms-2">Login</a>
-                        <a href="/Arunika/view/auth/registeruser.php" class="btn btn-outline-light ms-2">Daftar</a>
+                        <a href="/Arunika/view/auth/login.php" class="btn btn-pink ms-2">Login</a>
+                        <a href="/Arunika/view/auth/registeruser.php" class="btn btn-outline-pink ms-2">Daftar</a>
                     <?php else: ?>
                         <?php
                             $foto_url = null;

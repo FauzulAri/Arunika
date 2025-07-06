@@ -12,6 +12,12 @@ $cart = [];
 while ($row = $q->fetch_assoc()) {
     $cart[] = $row;
 }
+// Ambil 16 produk random untuk rekomendasi
+$rekom = [];
+$rq = $conn->query("SELECT * FROM furniture WHERE is_active=1 ORDER BY RAND() LIMIT 16");
+while ($row = $rq->fetch_assoc()) {
+    $rekom[] = $row;
+}
 ob_start();
 ?>
 <div class="container py-4">
@@ -53,9 +59,9 @@ ob_start();
                   <div class="text-muted small mb-1">Stok: <?= $item['stok'] ?></div>
                   <form method="post" action="/Arunika/controller/keranjang_update.php" class="d-flex align-items-center gap-2 mb-0" style="max-width:200px;">
                     <input type="hidden" name="keranjang_id" value="<?= $item['keranjang_id'] ?>">
-                    <button type="submit" name="action" value="minus" class="btn btn-outline-secondary btn-sm qty-minus">-</button>
+                    <button type="button" data-action="minus" class="btn btn-outline-secondary btn-sm qty-minus">-</button>
                     <input type="text" name="jumlah" class="form-control form-control-sm text-center item-qty" value="<?= $item['jumlah'] ?>" style="width:48px;" readonly>
-                    <button type="submit" name="action" value="plus" class="btn btn-outline-secondary btn-sm qty-plus">+</button>
+                    <button type="button" data-action="plus" class="btn btn-outline-secondary btn-sm qty-plus">+</button>
                   </form>
                 </div>
                 <div class="text-end me-3">
@@ -64,18 +70,35 @@ ob_start();
                     <div class="text-decoration-line-through text-muted small">Rp<?= number_format($item['harga_satuan'],0,',','.') ?></div>
                   <?php endif; ?>
                 </div>
-                <form method="post" action="/Arunika/controller/keranjang_delete.php" onsubmit="return confirm('Hapus barang dari keranjang?')">
-                  <input type="hidden" name="keranjang_id" value="<?= $item['keranjang_id'] ?>">
-                  <button type="submit" class="btn btn-link text-danger btn-delete ms-2" title="Hapus"><i class="fa fa-trash"></i></button>
-                </form>
+                <button type="button" class="btn btn-link text-danger btn-delete ms-2" data-id="<?= $item['keranjang_id'] ?>" title="Hapus"><i class="fa fa-trash"></i></button>
               </div>
             <?php endforeach; ?>
           <?php endif; ?>
         </div>
       </div>
+      <!-- Section Rekomendasi Untukmu -->
+      <div class="card p-3 mb-3 mt-4">
+        <h4 class="mb-3">Rekomendasi Untukmu</h4>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+          <?php foreach ($rekom as $r): ?>
+            <div class="col">
+              <div class="card h-100 shadow-sm border-0">
+                <img src="/Arunika/assets/img/<?= htmlspecialchars($r['gambar_furniture'] ?? 'noimage.jpg') ?>" class="card-img-top" alt="<?= htmlspecialchars($r['nama_furniture']) ?>" style="height:140px;object-fit:cover;">
+                <div class="card-body d-flex flex-column">
+                  <div class="fw-bold mb-1 text-center" style="font-size:1rem;min-height:38px;">
+                    <?= htmlspecialchars($r['nama_furniture']) ?>
+                  </div>
+                  <div class="mb-2 text-muted text-center" style="font-size:0.95rem;">Rp<?= number_format($r['harga'],0,',','.') ?></div>
+                  <button type="button" class="btn btn-sm btn-success w-100 mt-auto btn-rekom-add" data-id="<?= $r['furniture_id'] ?>"><i class="fa fa-cart-plus"></i> + Keranjang</button>
+                </div>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      </div>
     </div>
     <div class="col-lg-4">
-      <div class="card p-3 sticky-top" style="top:90px;">
+      <div class="card p-3 sticky-top" style="top:72px;">
         <h5 class="mb-3">Ringkasan belanja</h5>
         <div class="d-flex justify-content-between mb-2">
           <span>Total</span>
@@ -90,6 +113,15 @@ ob_start();
 <style>
 .cart-item { transition: background 0.2s; }
 .cart-item:hover { background: #f7f7fa; }
+/* Grid rekomendasi agar lebar sama dengan keranjang */
+.card .row-cols-md-4 { margin-left: 0; margin-right: 0; }
+.card .col { padding-left: 0.5rem; padding-right: 0.5rem; }
+/* Card rekomendasi: gambar, nama, harga, tombol urut dan tombol selalu di bawah */
+.card-body { display: flex; flex-direction: column; justify-content: flex-start; padding-bottom: 1rem; }
+.btn-rekom-add { margin-top: auto; }
+@media (max-width: 991px) {
+  .card .row-cols-md-4 { row-gap: 1rem; }
+}
 @media (max-width: 600px) {
   .cart-item { flex-direction: column; align-items: flex-start !important; }
   .cart-item img { margin-bottom: 8px; }
@@ -131,6 +163,79 @@ document.querySelectorAll('.cart-check').forEach(cb => {
 });
 // Inisialisasi total
 updateTotal();
+
+// --- AJAX KERANJANG ---
+function showToast(msg, type='success') {
+  let toast = document.createElement('div');
+  toast.className = `toast align-items-center text-bg-${type} border-0 position-fixed top-0 end-0 m-4 show`;
+  toast.style.zIndex = 9999; toast.style.minWidth = '280px';
+  toast.innerHTML = `<div class='d-flex'><div class='toast-body'>${msg}</div><button type='button' class='btn-close btn-close-white me-2 m-auto' data-bs-dismiss='toast'></button></div>`;
+  document.body.appendChild(toast);
+  setTimeout(()=>{toast.classList.remove('show');toast.classList.add('fade');setTimeout(()=>toast.remove(),500);}, 2500);
+}
+// Update/minus/plus qty
+cartList.addEventListener('click', async function(e) {
+  if (e.target.closest('.qty-minus') || e.target.closest('.qty-plus')) {
+    const btn = e.target.closest('button');
+    const form = btn.closest('form');
+    const keranjang_id = form.querySelector('[name=keranjang_id]').value;
+    const action = btn.dataset.action;
+    btn.disabled = true;
+    let res = await fetch('/Arunika/controller/keranjang_update_ajax.php', {
+      method: 'POST',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: `keranjang_id=${keranjang_id}&action=${action}`
+    });
+    let data = await res.json();
+    btn.disabled = false;
+    if(data.success){
+      let qtyInput = form.querySelector('.item-qty');
+      qtyInput.value = data.jumlah;
+      showToast(data.message, 'success');
+      updateTotal();
+    }else{
+      showToast(data.message, 'danger');
+    }
+  }
+  // Hapus item
+  if (e.target.closest('.btn-delete')) {
+    if(!confirm('Hapus barang dari keranjang?')) return;
+    const btn = e.target.closest('.btn-delete');
+    const keranjang_id = btn.dataset.id;
+    btn.disabled = true;
+    let res = await fetch('/Arunika/controller/keranjang_delete_ajax.php', {
+      method: 'POST',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: `keranjang_id=${keranjang_id}`
+    });
+    let data = await res.json();
+    btn.disabled = false;
+    if(data.success){
+      btn.closest('.cart-item').remove();
+      showToast(data.message, 'success');
+      updateTotal();
+    }else{
+      showToast(data.message, 'danger');
+    }
+  }
+});
+// Tambah dari rekomendasi
+const rekomBtns = document.querySelectorAll('.btn-rekom-add');
+rekomBtns.forEach(btn => {
+  btn.addEventListener('click', async function(){
+    btn.disabled = true;
+    let id = btn.dataset.id;
+    let res = await fetch('/Arunika/controller/keranjang_add_ajax.php', {
+      method: 'POST',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: `furniture_id=${id}&jumlah=1`
+    });
+    let data = await res.json();
+    btn.disabled = false;
+    showToast(data.message, data.success ? 'success' : 'danger');
+    // Tidak reload, user bisa lanjut belanja
+  });
+});
 </script>
 <?php
 $content = ob_get_clean();

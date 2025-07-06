@@ -5,5 +5,5 @@ $_SESSION = array();
 // Hancurkan session
 session_destroy();
 // Redirect ke halaman login
-header('Location: /Arunika/view/auth/login.php');
+header('Location: /Arunika/view/user/home/index.php');
 exit(); 

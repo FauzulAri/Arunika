@@ -1,190 +1,509 @@
 <?php
 
 ob_start();
+
+// Ambil data furniture dan kategori dari database
+include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
+
+// Ambil kategori
+$kategori = [];
+$kq = $conn->query("SELECT * FROM kategori WHERE is_active = 1 ORDER BY kategori_id ASC");
+while ($row = $kq->fetch_assoc()) {
+    $kategori[] = $row;
+}
+
+// Ambil furniture
+$furnitures = [];
+$fq = $conn->query("SELECT f.*, k.nama_kategori FROM furniture f JOIN kategori k ON f.kategori_id = k.kategori_id WHERE f.is_active = 1 ORDER BY f.furniture_id DESC");
+while ($row = $fq->fetch_assoc()) {
+    $furnitures[] = $row;
+}
+
+// Ambil data promo dari furniture yang memiliki diskon aktif
+$promo = [];
+$pq = $conn->query("SELECT f.*, k.nama_kategori, d.tipe, d.nilai, d.keterangan,
+    CASE 
+        WHEN d.tipe = 'persen' THEN f.harga / (1 - d.nilai/100)
+        ELSE f.harga + d.nilai
+    END AS harga_lama,
+    CASE 
+        WHEN d.tipe = 'persen' THEN d.nilai
+        ELSE (d.nilai / f.harga) * 100
+    END AS diskon_persen
+    FROM furniture f 
+    JOIN kategori k ON f.kategori_id = k.kategori_id 
+    JOIN diskon d ON f.furniture_id = d.furniture_id
+    WHERE f.is_active = 1 
+    AND d.is_active = 1
+    AND NOW() BETWEEN d.tanggal_mulai AND d.tanggal_selesai
+    ORDER BY d.tanggal_selesai ASC 
+    LIMIT 8");
+while ($row = $pq->fetch_assoc()) {
+    $promo[] = $row;
+}
+
+// Produk terlaris (random 10 furniture)
+$terlaris = [];
+$tq = $conn->query("SELECT f.*, k.nama_kategori FROM furniture f JOIN kategori k ON f.kategori_id = k.kategori_id WHERE f.is_active = 1 ORDER BY RAND() LIMIT 10");
+while ($row = $tq->fetch_assoc()) {
+    $terlaris[] = $row;
+}
 ?>
 
-<div class="hero-section">
-    <div class="hero-content">
-        <div class="hero-title">Satu tempat untuk semua kebutuhan ruang Anda</div>
-        <div class="hero-subtitle">Dari perencanaan ruang hingga pemilihan furnitur, kami hadir untuk menghadirkan kenyamanan dan keindahan di setiap sudut hunian Anda.</div>
-        <a href="#" class="hero-btn">Mulai Sekarang</a>
-    </div>
-</div>
+<!-- HERO SECTION -->
+<section class="hero-arunika">
+  <div class="hero-arunika-bg">
+    <img src="/Arunika/assets/img/interior1.jpg" alt="Hero Arunika"/>
+  </div>
+  <div class="hero-arunika-content">
+    <h1 class="hero-arunika-title">Marketplace Furniture & Interior Terlengkap</h1>
+    <p class="hero-arunika-subtitle">Temukan ribuan produk furniture berkualitas, promo menarik, dan inspirasi ruang impian Anda di Arunika Interior.</p>
+    <a href="/Arunika/view/user/product/furniture.php" class="hero-arunika-btn">Jelajahi Katalog</a>
+    <a href="#promo" class="hero-arunika-btn btn-outline">Lihat Promo</a>
+  </div>
+</section>
 
-<!-- Hero Section 2 sesuai gambar -->
-<div class="hero2-section-v2">
-    <div class="hero2-title-v2">Layanan yang diberikan Arunika Interiors</div>
-    <div class="hero2-features-v2">
-        <!-- Feature 1 -->
-        <div class="hero2-feature-row">
-            <div class="hero2-feature-col-text">
-                <div class="hero2-feature-title-row">
-                    <div class="hero2-feature-number">1</div>
-                    <div class="hero2-feature-title-v2">Temukan desainer ideal Anda</div>
-                </div>
-                <div class="hero2-feature-desc-v2">Pilih desainer interior dari rekomendasi kami yang telah dikurasi secara personal. Dengan pengalaman lebih dari 10 tahun dan ribuan proyek yang telah dikerjakan, tim ahli kami siap membantu mewujudkan rumah impian Anda.</div>
-            </div>
-            <div class="hero2-feature-col-img">
-                <div class="hero2-feature-img-v2">
-                    <img src="/Arunika/assets/img/planning.jpg" alt="Desain Personal">
-                </div>
-            </div>
-        </div>
-        <!-- Feature 2 -->
-        <div class="hero2-feature-row">
-            <div class="hero2-feature-col-text">
-                <div class="hero2-feature-title-row">
-                    <div class="hero2-feature-number">2</div>
-                    <div class="hero2-feature-title-v2">Wujudkan desain impian bersama desainer kami</div>
-                </div>
-                <div class="hero2-feature-desc-v2">Bersama desainer Arunika, Anda akan diarahkan menemukan solusi yang fungsional sekaligus estetik—selaras dengan gaya personal Anda.</div>
-            </div>
-            <div class="hero2-feature-col-img">
-                <div class="hero2-feature-img-v2 grid grid-custom">
-                    <div class="grid-vertical">
-                        <img src="/Arunika/assets/img/interior1.jpg" alt="Grid 1" class="img-vertical">
-                    </div>
-                    <div class="grid-right">
-                        <img src="/Arunika/assets/img/interior2.jpg" alt="Grid 2">
-                        <img src="/Arunika/assets/img/interior3.jpeg" alt="Grid 4">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Feature 3 -->
-        <div class="hero2-feature-row">
-            <div class="hero2-feature-col-text">
-                <div class="hero2-feature-title-row">
-                    <div class="hero2-feature-number">3</div>
-                    <div class="hero2-feature-title-v2">Belanja mudah, hasil maksimal</div>
-                </div>
-                <div class="hero2-feature-desc-v2">Nikmati akses ke produk terbaik dari berbagai merek furnitur ternama, diskon khusus, serta pengalaman belanja yang praktis dan terintegrasi.</div>
-            </div>
-            <div class="hero2-feature-col-img">
-                <div class="hero2-feature-img-v2 grid grid-custom feature3">
-                    <div class="grid-vertical">
-                        <img src="/Arunika/assets/img/interior4.jpeg" alt="Grid 5" class="img-vertical">
-                        <img src="/Arunika/assets/img/interior5.jpg" alt="Grid 6"  class="img-vertical">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- KATEGORI UTAMA -->
+<section class="kategori-arunika">
+  <h2 class="section-title">Kategori Populer</h2>
+  <div class="kategori-grid">
+    <?php foreach ($kategori as $k): ?>
+      <a href="/Arunika/view/user/product/furniture.php?cat=<?= urlencode($k['nama_kategori']) ?>" class="kategori-card">
+        <div class="kategori-icon"><i class="fa <?= htmlspecialchars($k['icon']) ?>"></i></div>
+        <div class="kategori-nama"><?= htmlspecialchars($k['nama_kategori']) ?></div>
+      </a>
+    <?php endforeach; ?>
+  </div>
+</section>
 
-<!-- Hero Section 3 -->
-<div class="hero3-section">
-    <div class="hero3-overlay"></div>
-    <div class="hero3-content">
-        <div class="hero3-title">Paket yang kami tawarkan</div>
-        <div class="hero3-cards-wrapper">
-            <!-- Card 1 -->
-            <div class="hero3-card">
-                <div class="hero3-badge">Diskon<br>40%</div>
-                <div class="hero3-card-title">Desain Online</div>
-                <div class="hero3-card-desc">Bermitra secara online dengan salah satu desainer berbakat kami untuk mewujudkan rumah impian Anda — kapan saja dan di mana saja.</div>
-                <div class="hero3-card-price-old">Rp 4.499.000</div>
-                <div class="hero3-card-price">Rp 2.699.000</div>
-                <a href="#" class="hero3-card-btn">Mulai Desain Online</a>
-            </div>
-            <!-- Card 2 -->
-            <div class="hero3-card">
-                <div class="hero3-badge">Diskon<br>40%</div>
-                <div class="hero3-card-title">Desain Tatap Muka</div>
-                <div class="hero3-card-desc">Bermitra secara langsung dengan desainer kami untuk mewujudkan interior impian Anda — langsung di rumah Anda.</div>
-                <div class="hero3-card-price-old">Rp 9.665.000</div>
-                <div class="hero3-card-price">Rp 5.799.000</div>
-                <a href="#" class="hero3-card-btn">Mulai Desain Tatap Muka</a>
-            </div>
+<!-- PROMO/FLASH SALE -->
+<section class="promo-arunika" id="promo">
+  <h2 class="section-title">Promo & Flash Sale</h2>
+  <div class="promo-grid">
+    <?php if (empty($promo)): ?>
+      <div class="text-center w-100">
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle"></i> Belum ada promo aktif saat ini.
         </div>
-    </div>
-</div>
+      </div>
+    <?php else: ?>
+      <?php foreach (array_slice($promo,0,8) as $p): ?>
+        <div class="promo-card">
+          <img src="/Arunika/assets/img/<?= htmlspecialchars($p['gambar_furniture'] ?? 'noimage.jpg') ?>" alt="<?= htmlspecialchars($p['nama_furniture']) ?>">
+          <div class="promo-info">
+            <div class="promo-title"><?= htmlspecialchars($p['nama_furniture']) ?></div>
+            <div class="promo-price-old">Rp<?= number_format($p['harga_lama'],0,',','.') ?></div>
+            <div class="promo-badge">
+              <?php if ($p['tipe'] == 'persen'): ?>
+                Diskon <?= number_format($p['diskon_persen'],0) ?>%
+              <?php else: ?>
+                Hemat Rp<?= number_format($p['nilai'],0,',','.') ?>
+              <?php endif; ?>
+            </div>
+            <div class="promo-price">Rp<?= number_format($p['harga'],0,',','.') ?></div>
+            <div class="promo-keterangan"><?= htmlspecialchars($p['keterangan']) ?></div>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    <?php endif; ?>
+  </div>
+</section>
 
-<!-- Hero Section 4 -->
-<div class="hero4-section">
-    <div class="hero4-title">Rasakan Keindahan Setiap Rancangan Kami</div>
-    <div class="hero4-subtitle">Jelajahi berbagai desain interior yang telah kami hadirkan untuk menciptakan ruang yang harmonis dan penuh karakter.</div>
-    <div class="hero4-room-selector">
-        <button class="hero4-room-btn active"><i class="fa fa-bed"></i> Ruang Tidur</button>
-        <button class="hero4-room-btn"><i class="fa fa-couch"></i> Ruang Tamu</button>
-        <button class="hero4-room-btn"><i class="fa fa-utensils"></i> Ruang Makan</button>
-        <button class="hero4-room-btn"><i class="fa fa-plus"></i> Telusuri Lebih</button>
-    </div>
-    <div class="hero4-slider-wrapper">
-        <button class="hero4-arrow hero4-arrow-left"><i class="fa fa-arrow-left"></i></button>
-        <div class="hero4-slider-img-container">
-            <img src="/Arunika/assets/img/glam1.jpg" alt="Hollywood glam" class="hero4-slider-img">
-        </div>
-        <button class="hero4-arrow hero4-arrow-right"><i class="fa fa-arrow-right"></i></button>
-    </div>
-    <div class="hero4-slider-caption"><em>Hollywood glam</em></div>
-</div>
+<!-- PRODUK TERLARIS/UNGGULAN -->
+<section class="unggulan-arunika">
+  <h2 class="section-title">Produk Terlaris</h2>
+  <div class="unggulan-grid">
+    <?php foreach (array_slice($terlaris,0,8) as $t): ?>
+      <div class="unggulan-card">
+        <img src="/Arunika/assets/img/<?= htmlspecialchars($t['gambar_furniture'] ?? 'noimage.jpg') ?>" alt="<?= htmlspecialchars($t['nama_furniture']) ?>">
+        <div class="unggulan-title"><?= htmlspecialchars($t['nama_furniture']) ?></div>
+        <div class="unggulan-price">Rp<?= number_format($t['harga'],0,',','.') ?></div>
+      </div>
+    <?php endforeach; ?>
+  </div>
+</section>
 
-<!-- Hero Section 5: Ulasan Pengguna -->
-<div class="hero5-section">
-    <div class="hero5-title">Ulasan Pengguna</div>
-    <div class="hero5-slider-container">
-        <button class="hero5-nav hero5-nav-left" onclick="slideReview(-1)">Sebelumnya</button>
-        <div class="hero5-slider" id="hero5-slider">
-            <!-- Card 1 -->
-            <div class="hero5-card fade show">
-                <img src="/Arunika/assets/img/user1.jpg" alt="Senja Pradipa" class="hero5-user-img">
-                <div class="hero5-user-name">Senja Pradipa</div>
-                <div class="hero5-rating">★★★★★</div>
-                <div class="hero5-card-title">Profesional, cepat, dan penuh ide</div>
-                <div class="hero5-card-desc">Saya sangat puas dengan layanan yang diberikan. Desainer yang ditugaskan tidak hanya mendengar keinginan saya, tapi juga memberi masukan yang sangat berguna. Saya merasa rumah saya sekarang lebih berkarakter dan elegan.</div>
-            </div>
-            <!-- Card 2 -->
-            <div class="hero5-card fade show">
-                <img src="/Arunika/assets/img/user2.jpg" alt="Aulia Rachma" class="hero5-user-img">
-                <div class="hero5-user-name">Aulia Rachma</div>
-                <div class="hero5-rating">★★★★★</div>
-                <div class="hero5-card-title">Desainnya bikin jatuh cinta!</div>
-                <div class="hero5-card-desc">Dari awal konsultasi sampai tahap akhir, prosesnya sangat menyenangkan. Tim Arunika benar-benar memahami gaya saya dan membuat ruangan terasa lebih hidup tanpa kehilangan kenyamanan. Hasil akhirnya bahkan lebih indah dari yang saya bayangkan!</div>
-            </div>
-            <!-- Card 3 -->
-            <div class="hero5-card fade show">
-                <img src="/Arunika/assets/img/user3.jpg" alt="Maria Lestari" class="hero5-user-img">
-                <div class="hero5-user-name">Maria Lestari</div>
-                <div class="hero5-rating">★★★★★</div>
-                <div class="hero5-card-title">Pengalaman luar biasa!</div>
-                <div class="hero5-card-desc">Layanan Arunika Interiors benar-benar memberikan pengalaman desain interior yang personal dan menyenangkan. Komunikasinya cepat, dan hasil desainnya luar biasa detail. Bahkan anak saya suka dengan kamar barunya!</div>
-            </div>
-            <!-- Card 4 -->
-            <div class="hero5-card fade show">
-                <img src="/Arunika/assets/img/user4.jpg" alt="Raka Wijaya" class="hero5-user-img">
-                <div class="hero5-user-name">Raka Wijaya</div>
-                <div class="hero5-rating">★★★★★</div>
-                <div class="hero5-card-title">Desain modern, proses fleksibel</div>
-                <div class="hero5-card-desc">Saya sangat terbantu dengan sistem konsultasi online. Desain 3D yang ditampilkan benar-benar membantu saya membayangkan hasil akhir. Prosesnya juga fleksibel dan tidak ribet. Sangat direkomendasikan!</div>
-            </div>
-        </div>
-        <button class="hero5-nav hero5-nav-right" onclick="slideReview(1)">Selanjutnya</button>
+<!-- KEUNGGULAN/BENEFIT -->
+<section class="benefit-arunika">
+  <h2 class="section-title">Kenapa Pilih Arunika?</h2>
+  <div class="benefit-grid">
+    <div class="benefit-card"><i class="fa fa-truck"></i><div>Gratis Ongkir</div></div>
+    <div class="benefit-card"><i class="fa fa-shield-alt"></i><div>Garansi Produk</div></div>
+    <div class="benefit-card"><i class="fa fa-th-large"></i><div>Pilihan Lengkap</div></div>
+    <div class="benefit-card"><i class="fa fa-headset"></i><div>CS Ramah</div></div>
+  </div>
+</section>
+
+<!-- TESTIMONI/ULASAN -->
+<section class="testimoni-arunika">
+  <h2 class="section-title">Apa Kata Pelanggan?</h2>
+  <div class="testimoni-grid">
+    <div class="testimoni-card">
+      <img src="/Arunika/assets/img/person1.jpg" class="testimoni-img" alt="User 1">
+      <div class="testimoni-nama">Fajar Andika</div>
+      <div class="testimoni-rating">★★★★★</div>
+      <div class="testimoni-isi">Produk berkualitas, pengiriman cepat, dan CS sangat membantu!</div>
     </div>
-</div>
-<script>
-let hero5Index = 0;
-function slideReview(dir) {
-    const cards = document.querySelectorAll('.hero5-card');
-    const total = cards.length;
-    // Hide all
-    cards.forEach(card => { card.classList.remove('show'); card.classList.add('fade'); });
-    // Calculate new index
-    hero5Index += dir;
-    if (hero5Index < 0) hero5Index = total - 1;
-    if (hero5Index >= total) hero5Index = 0;
-    // Show only the selected
-    cards[hero5Index].classList.add('show');
+    <div class="testimoni-card">
+      <img src="/Arunika/assets/img/person2.jpg" class="testimoni-img" alt="User 2">
+      <div class="testimoni-nama">Rina Lestari</div>
+      <div class="testimoni-rating">★★★★★</div>
+      <div class="testimoni-isi">Banyak pilihan furniture, harga bersaing, dan promo menarik.</div>
+    </div>
+    <div class="testimoni-card">
+      <img src="/Arunika/assets/img/person3.jpg" class="testimoni-img" alt="User 3">
+      <div class="testimoni-nama">Maria Lestari</div>
+      <div class="testimoni-rating">★★★★★</div>
+      <div class="testimoni-isi">Sangat puas belanja di Arunika, pasti akan order lagi!</div>
+    </div>
+  </div>
+</section>
+
+<!-- INSPIRASI RUANG (OPSIONAL) -->
+<section class="inspirasi-arunika">
+  <h2 class="section-title">Inspirasi Ruang</h2>
+  <div class="inspirasi-grid">
+    <div class="inspirasi-card"><img src="/Arunika/assets/img/interior2.jpg" alt="Inspirasi 1"><div>Ruang Tamu Modern</div></div>
+    <div class="inspirasi-card"><img src="/Arunika/assets/img/interior3.jpeg" alt="Inspirasi 2"><div>Ruang Keluarga Nyaman</div></div>
+    <div class="inspirasi-card"><img src="/Arunika/assets/img/interior4.jpeg" alt="Inspirasi 3"><div>Kamar Tidur Minimalis</div></div>
+    <div class="inspirasi-card"><img src="/Arunika/assets/img/interior5.jpg" alt="Inspirasi 4"><div>Sudut Kerja Fungsional</div></div>
+  </div>
+</section>
+
+<style>
+.hero-arunika {
+  position: relative;
+  width: 100vw;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f7fa;
+  overflow: hidden;
 }
-// Show first card only on load
-window.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.hero5-card');
-    cards.forEach((card, i) => {
-        if (i === 0) card.classList.add('show');
-        else card.classList.remove('show');
-    });
-});
-</script>
+.hero-arunika-bg img {
+  width: 100vw;
+  min-height: 60vh;
+  object-fit: cover;
+  filter: brightness(0.7);
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  z-index: 1;
+}
+.hero-arunika-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #fff;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 4rem 1rem 3rem 1rem;
+}
+.hero-arunika-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1.2rem;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.3);
+}
+.hero-arunika-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.hero-arunika-btn {
+  background: #FEA5AD;
+  color: #fff;
+  border: none;
+  border-radius: 40px;
+  padding: 0.75rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0 0.5rem 0.5rem 0.5rem;
+  transition: background 0.2s;
+  display: inline-block;
+}
+.hero-arunika-btn.btn-outline {
+  background: #fff;
+  color: #FEA5AD;
+  border: 2px solid #FEA5AD;
+}
+.hero-arunika-btn:hover {
+  background: #e07b87;
+  color: #fff;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 2.5rem 0 1.5rem 0;
+  color: #222;
+  font-family: 'Sansita Swashed', cursive;
+}
+
+.kategori-arunika {
+  background: #fff;
+  padding: 2rem 0 1rem 0;
+}
+.kategori-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.kategori-card {
+  background: #f7f7fa;
+  border-radius: 16px;
+  padding: 1.2rem 0.5rem;
+  text-align: center;
+  color: #222;
+  text-decoration: none;
+  box-shadow: 0 2px 12px #0001;
+  transition: box-shadow 0.2s, transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.kategori-card:hover {
+  box-shadow: 0 6px 24px #0002;
+  transform: translateY(-4px) scale(1.04);
+}
+.kategori-icon {
+  font-size: 2.2rem;
+  margin-bottom: 0.7rem;
+  color: #FEA5AD;
+}
+.kategori-nama {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.promo-arunika {
+  background: #faece6;
+  padding: 2rem 0 1rem 0;
+}
+.promo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.promo-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px #0001;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.promo-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+.promo-info {
+  padding: 1rem;
+  width: 100%;
+  text-align: center;
+}
+.promo-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+}
+.promo-price-old {
+  text-decoration: line-through;
+  color: #b0b0b0;
+  font-size: 0.95rem;
+  margin-bottom: 0.1rem;
+}
+.promo-badge {
+  background: #ff3d3d;
+  color: #fff;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  padding: 0.1rem 0.6rem;
+  margin-bottom: 0.2rem;
+  display: inline-block;
+}
+.promo-price {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #222;
+  margin-bottom: 0.2rem;
+}
+.promo-keterangan {
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+  margin-top: 0.3rem;
+}
+
+.unggulan-arunika {
+  background: #fff;
+  padding: 2rem 0 1rem 0;
+}
+.unggulan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.unggulan-card {
+  background: #f7f7fa;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px #0001;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 1rem;
+}
+.unggulan-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+.unggulan-title {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0.7rem 0 0.3rem 0;
+  text-align: center;
+}
+.unggulan-price {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #222;
+  margin-bottom: 0.2rem;
+}
+
+.benefit-arunika {
+  background: #faece6;
+  padding: 2rem 0 1rem 0;
+}
+.benefit-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.benefit-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px #0001;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #FEA5AD;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 160px;
+}
+.benefit-card i {
+  font-size: 2.2rem;
+  margin-bottom: 0.7rem;
+}
+.benefit-card div {
+  color: #222;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.testimoni-arunika {
+  background: #fff;
+  padding: 2rem 0 1rem 0;
+}
+.testimoni-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  align-items: stretch;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.testimoni-card {
+  background: #faece6;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px #0001;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: #222;
+  font-size: 1rem;
+  flex: 1 1 220px;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.testimoni-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px #0001;
+}
+.testimoni-nama {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.7rem;
+}
+.testimoni-rating {
+  color: #FFD600;
+  font-size: 1.3rem;
+  margin-bottom: 1.1rem;
+}
+.testimoni-isi {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 0.2rem;
+}
+
+.inspirasi-arunika {
+  background: #faece6;
+  padding: 2rem 0 1rem 0;
+}
+.inspirasi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.inspirasi-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px #0001;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 1rem;
+}
+.inspirasi-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+.inspirasi-card div {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0.7rem 0 0.3rem 0;
+  text-align: center;
+}
+</style>
 
 <?php
 $content = ob_get_clean();

@@ -1,65 +1,40 @@
 <?php
 ob_start();
+// Ambil data furniture dari database
+include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
+$furnitures = [];
+$fq = $conn->query("SELECT * FROM furniture WHERE is_active = 1 ORDER BY furniture_id DESC LIMIT 4");
+while ($row = $fq->fetch_assoc()) {
+    $furnitures[] = $row;
+}
 ?>
-<div class="hero-detailwork-section">
-    <div class="text-center w-100 d-flex flex-column align-items-center justify-content-center">
-        <div class="hero-detailwork-title">Proses Desain Arunika Interior</div>
-        <div class="hero-detailwork-subtitle">cara mudah untuk mendesain ruanganmu</div>
-        <a href="/Arunika/view/user/get_start/getting_start.php" class="hero-detailwork-btn">Mulai sekarang</a>
-    </div>
-</div>
 <div class="step-section">
     <div class="step-row">
         <div class="step-img-col">
             <div class="designer-grid-section">
                 <div class="designer-grid">
-                    <div class="designer-card active">
-                        <img src="/Arunika/assets/img/interior1.jpg" class="designer-img" alt="Ghianella">
+                    <?php foreach ($furnitures as $i => $f): ?>
+                    <div class="designer-card <?= $i === 0 ? 'active' : 'inactive' ?>">
+                        <img src="/Arunika/assets/img/<?= htmlspecialchars($f['gambar_furniture'] ?? 'noimage.jpg') ?>" class="designer-img" alt="<?= htmlspecialchars($f['nama_furniture']) ?>">
                         <div class="designer-info">
-                            <img src="/Arunika/assets/img/person1.jpg" class="designer-avatar" alt="Ghianella">
                             <div>
-                                <div class="designer-name">Ghianella</div>
-                                <div class="designer-status">Taking on projects this week</div>
+                                <div class="designer-name" style="font-weight:bold; font-size:1.1rem;">
+                                    <?= htmlspecialchars($f['nama_furniture']) ?>
+                                </div>
+                                <div class="designer-status">
+                                    Stok: <?= (int)$f['stok'] > 0 ? $f['stok'] . ' tersedia' : '<span style=\'color:red\'>Habis</span>' ?>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="designer-card inactive">
-                        <img src="/Arunika/assets/img/interior2.jpg" class="designer-img" alt="Freddi">
-                        <div class="designer-info">
-                            <img src="/Arunika/assets/img/person2.jpg" class="designer-avatar" alt="Freddi">
-                            <div>
-                                <div class="designer-name">Freddi</div>
-                                <div class="designer-status">Taking on projects this week</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="designer-card inactive">
-                        <img src="/Arunika/assets/img/interior3.jpeg" class="designer-img" alt="Jordan">
-                        <div class="designer-info">
-                            <img src="/Arunika/assets/img/person3.jpg" class="designer-avatar" alt="Jordan">
-                            <div>
-                                <div class="designer-name">Jordan</div>
-                                <div class="designer-status">Taking on projects this week</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="designer-card inactive">
-                        <img src="/Arunika/assets/img/interior4.jpeg" class="designer-img" alt="Emmanuel">
-                        <div class="designer-info">
-                            <img src="/Arunika/assets/img/person4.jpg" class="designer-avatar" alt="Emmanuel">
-                            <div>
-                                <div class="designer-name">Emmanuel</div>
-                                <div class="designer-status">Taking on projects this week</div>
-                            </div>
-                        </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
         <div class="step-text-col">
             <div class="step-label">STEP 1</div>
-            <div class="step-title">Pilih Desainer</div>
-            <div class="step-desc">Pilih salah satu desainer berbakat kami yang akan menjadi partner Anda selama proses desain. Mereka akan membimbing Anda secara personal dari awal hingga akhir.</div>
+            <div class="step-title">Pilih Furnitur Favorit</div>
+            <div class="step-desc">Pilih salah satu furnitur favorit Anda yang akan menjadi inspirasi utama dalam proses desain ruangan. Furnitur pilihan Anda akan menjadi pusat perhatian dalam ruangan impian Anda.</div>
         </div>
     </div>
 </div>
@@ -68,7 +43,7 @@ ob_start();
         <div class="step-text-col">
             <div class="step-label">STEP 2</div>
             <div class="step-title">Ceritakan Kebutuhanmu</div>
-            <div class="step-desc">Sampaikan detail kebutuhan dan inspirasi ruang impian Anda kepada desainer kami. Kami akan membantu mewujudkan visi Anda dengan solusi terbaik.</div>
+            <div class="step-desc">Sampaikan detail kebutuhan dan inspirasi ruang impian Anda kepada tim kami. Kami akan membantu mewujudkan visi Anda dengan solusi terbaik.</div>
         </div>
         <div class="step2-img-col">
             <img src="/Arunika/assets/img/interior5.jpg" class="step2-img-slider active" alt="Preview 1">
@@ -87,7 +62,7 @@ ob_start();
         <div class="step-text-col">
             <div class="step-label">STEP 3</div>
             <div class="step-title">Kolaborasi & Inspirasi</div>
-            <div class="step-desc">Kolaborasi dengan desainer kami untuk mendapatkan inspirasi dan solusi terbaik bagi ruang Anda. Setiap ide dan masukan akan membantu mewujudkan ruang impian Anda.</div>
+            <div class="step-desc">Kolaborasi dengan tim kami untuk mendapatkan inspirasi dan solusi terbaik bagi ruang Anda. Setiap ide dan masukan akan membantu mewujudkan ruang impian Anda.</div>
         </div>
     </div>
 </div>
@@ -108,7 +83,7 @@ ob_start();
     </div>
 </div>
 <script>
-// Animasi looping designer grid
+// Animasi looping card furniture
 const designers = document.querySelectorAll('.designer-card');
 let activeIdx = 0;
 function setActiveDesigner(idx) {
@@ -127,8 +102,7 @@ setInterval(() => {
     activeIdx = (activeIdx + 1) % designers.length;
     setActiveDesigner(activeIdx);
 }, 2000);
-
-// Slider animasi step 2 otomatis, slide always to left
+// Step 2, 3, 4 animasi tetap
 const sliderImgs = document.querySelectorAll('.step2-img-col .step2-img-slider');
 let sliderIdx = 0;
 let prevIdx = 0;
@@ -146,8 +120,6 @@ setInterval(() => {
     sliderIdx = (sliderIdx + 1) % sliderImgs.length;
     showSliderImg(sliderIdx, prevIdx);
 }, 5000);
-
-// Slider animasi step 3 otomatis, fade in/out
 const step3Imgs = document.querySelectorAll('.step3-img-col .step3-img-slider');
 let step3Idx = 0;
 function showStep3Img(idx) {
@@ -162,26 +134,18 @@ setInterval(() => {
     step3Idx = (step3Idx + 1) % step3Imgs.length;
     showStep3Img(step3Idx);
 }, 5000);
-
 const afterImg = document.querySelector('.step4-img-after');
 const bar = document.querySelector('.step4-vertical-bar');
 const wrapper = document.querySelector('.step4-beforeafter-wrapper');
-
 let progress = 110;
 let direction = -1;
-
 function animateBeforeAfter() {
     progress += direction * 1;
-
-    // Hitung posisi bar (dari 0% sampai 100% area gambar)
     let barOffset = wrapper.offsetWidth * (progress / 100);
-
-    // Bar di luar kanan
     if (progress > 100) {
         afterImg.style.clipPath = `inset(0 0 0 0)`;
         bar.style.left = (wrapper.offsetWidth) + 'px';
     }
-    // Bar di luar kiri
     else if (progress < 0) {
         afterImg.style.clipPath = `inset(0 ${wrapper.offsetWidth}px 0 0)`;
         bar.style.left = (-bar.offsetWidth) + 'px';
@@ -191,12 +155,10 @@ function animateBeforeAfter() {
         }, 4000);
         return;
     }
-    // Bar di dalam area gambar
     else {
         afterImg.style.clipPath = `inset(0 ${wrapper.offsetWidth - barOffset}px 0 0)`;
         bar.style.left = (barOffset - bar.offsetWidth / 2) + 'px';
     }
-
     setTimeout(animateBeforeAfter, 20);
 }
 animateBeforeAfter();

@@ -8,10 +8,10 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 $user_id = $_SESSION['user_id'];
 
 // Ambil data user dari database
-$stmt = $conn->prepare('SELECT nama, email, alamat, foto, tanggal_daftar FROM User WHERE user_id = ?');
+$stmt = $conn->prepare('SELECT nama, email, alamat, foto, tanggal_daftar, no_hp FROM user WHERE user_id = ?');
 $stmt->bind_param('i', $user_id);
 $stmt->execute();
-$stmt->bind_result($nama, $email, $alamat, $foto, $tanggal_daftar);
+$stmt->bind_result($nama, $email, $alamat, $foto, $tanggal_daftar, $no_hp);
 $stmt->fetch();
 $stmt->close();
 
@@ -19,7 +19,7 @@ $foto_url = $foto ? "/Arunika/assets/img/profile/" . htmlspecialchars($foto) : "
 
 ob_start();
 ?>
-<div class="container d-flex flex-column justify-content-center align-items-center" style="min-height: 80vh;">
+<div class="container d-flex flex-column justify-content-center align-items-center" style="min-height: 80vh; padding-top: 7rem; padding-bottom: 7rem;">
     <div class="card shadow p-4" style="max-width: 480px; width: 100%;">
         <h3 class="mb-4 text-center">Edit Profil Pengguna</h3>
         <form action="/Arunika/controller/user_update_profile.php" method="post" enctype="multipart/form-data">
@@ -44,6 +44,10 @@ ob_start();
             <div class="mb-3">
                 <label for="alamat" class="form-label">Alamat</label>
                 <textarea class="form-control" id="alamat" name="alamat" rows="2"><?= htmlspecialchars($alamat) ?></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="no_hp" class="form-label">No. HP</label>
+                <input type="text" class="form-control" id="no_hp" name="no_hp" value="<?= htmlspecialchars($no_hp) ?>" maxlength="15">
             </div>
             <div class="mb-3">
                 <label class="form-label">Tanggal Daftar</label>

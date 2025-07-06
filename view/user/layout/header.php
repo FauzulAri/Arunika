@@ -19,6 +19,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sansita+Swashed:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <title>Arunika Interior</title>
+    <style>
+        .btn-fixed-width {
+            min-width: 130px;
+            max-width: 180px;
+            width: 150px;
+            text-align: center;
+            white-space: nowrap;
+        }
+    </style>
 </head>
 
 <body>
@@ -34,13 +43,7 @@
                         <a class="nav-link" href="/Arunika/view/user/services/detail_work.php">Cara Kerja</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/Arunika/view/user/services/desainer.php">Desain</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="/Arunika/view/user/product/furniture.php">Furniture</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Arunika/view/user/product/portofolio.php">Portofolio</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Ulasan</a>
@@ -48,7 +51,7 @@
                 </ul>
                 <div class="d-flex ms-auto align-items-center gap-3">
                     <?php if (!isset($_SESSION['user_id'])): ?>
-                        <a href="/Arunika/view/user/get_start/getting_start.php" class="btn btn-custom">Mulai Sekarang</a>
+                        <a href="/Arunika/view/user/get_start/getting_start.php" class="btn btn-custom btn-fixed-width">Daftar</a>
                     <?php endif; ?>
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <?php
@@ -79,7 +82,7 @@
                             <i class="fa fa-shopping-cart" style="font-size: 2rem;"></i>
                         </a>
                     <?php else: ?>
-                        <a href="/Arunika/view/auth/login.php" class="btn btn-login-custom">Login</a>
+                        <a href="/Arunika/view/auth/login.php" class="btn btn-login-custom btn-fixed-width">Login</a>
                     <?php endif; ?>
                 </div>
             </div>

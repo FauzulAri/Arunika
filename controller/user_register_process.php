@@ -23,7 +23,7 @@ if ($password !== $konfirmasi_password) {
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 // Cek email sudah terdaftar
-$stmt_cek = $conn->prepare("SELECT user_id FROM User WHERE email = ?");
+$stmt_cek = $conn->prepare("SELECT user_id FROM user WHERE email = ?");
 $stmt_cek->bind_param("s", $email);
 $stmt_cek->execute();
 $stmt_cek->store_result();
@@ -35,11 +35,10 @@ if ($stmt_cek->num_rows > 0) {
 $stmt_cek->close();
 
 // Insert user baru
-$role = 'user'; // default role
 $foto = null;   // default foto
 
-$stmt = $conn->prepare("INSERT INTO User (nama, email, password, role, foto, tanggal_daftar) VALUES (?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("ssssss", $nama, $email, $hashed_password, $role, $foto, $tanggal_daftar);
+$stmt = $conn->prepare("INSERT INTO user (nama, email, password, foto, tanggal_daftar) VALUES (?, ?, ?, ?, ?)");
+$stmt->bind_param("sssss", $nama, $email, $hashed_password, $foto, $tanggal_daftar);
 
 if ($stmt->execute()) {
     echo "<script>alert('Registrasi berhasil! Silakan login.'); window.location.href='/Arunika/view/auth/login.php';</script>";

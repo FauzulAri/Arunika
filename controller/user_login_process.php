@@ -7,7 +7,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     $password = $_POST['password'];
 
     // Menggunakan prepared statements untuk mencegah SQL injection
-    $stmt = $conn->prepare("SELECT user_id, nama, email, password, role FROM User WHERE email = ?");
+    $stmt = $conn->prepare("SELECT user_id, nama, email, password FROM user WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -18,7 +18,6 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         $hashed_password = $user['password'];
         $user_id = $user['user_id'];
         $nama = $user['nama'];
-        $role = isset($user['role']) ? $user['role'] : 'user';
 
         // Memverifikasi password yang dimasukkan dengan password yang di-hash
         if (password_verify($password, $hashed_password)) {
@@ -26,7 +25,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
             $_SESSION['user_id'] = $user_id;
             $_SESSION['nama'] = $nama;
             $_SESSION['email'] = $email;
-            $_SESSION['role'] = $role;
+            $_SESSION['role'] = 'user';
             header('Location: /Arunika/view/user/home/index.php');
             exit();
         } else {

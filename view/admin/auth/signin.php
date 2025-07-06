@@ -29,7 +29,7 @@ ob_start();
     </style>
 </head>
 <body>
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 150vh;">
     <div class="login-card p-4 shadow w-100" style="max-width: 400px;">
         <h3 class="mb-4 text-center login-title">Login Admin</h3>
         <form action="/Arunika/controller/admin_login_process.php" method="post" autocomplete="off">

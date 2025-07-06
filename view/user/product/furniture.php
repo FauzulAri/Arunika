@@ -18,7 +18,10 @@ while ($row = $result->fetch_assoc()) {
 ob_start();
 ?>
 <div class="hero-detailwork-section">
-    <div class="text-center w-100 d-flex flex-column align-items-center justify-content-center">
+    <div class="hero-detailwork-bg">
+      <img src="/Arunika/assets/img/interior1.jpg" alt="Hero Furniture" class="hero-detailwork-img">
+    </div>
+    <div class="hero-detailwork-overlay d-flex flex-column align-items-center justify-content-center text-center">
         <div class="hero-detailwork-title">Koleksi Furniture Arunika</div>
         <div class="hero-detailwork-subtitle">Temukan inspirasi furniture terbaik untuk melengkapi ruangan impian Anda.</div>
     </div>
@@ -42,9 +45,9 @@ ob_start();
     </div>
     <div class="designer-grid-section">
         <div id="furniture-list" class="designer-grid furniture-grid-5"></div>
-    </div>
+            </div>
     <div id="pagination" class="pagination-furniture mt-4 d-flex justify-content-center"></div>
-</div>
+            </div>
 
 <style>
 .designer-grid-section {
@@ -149,6 +152,53 @@ ob_start();
     color: #fff;
     border-color: #007bff;
 }
+.hero-detailwork-section {
+  position: relative;
+  width: 100vw;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+.hero-detailwork-bg {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  width: 100vw;
+  height: 100%;
+  z-index: 1;
+}
+.hero-detailwork-img {
+  width: 100vw;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7);
+}
+.hero-detailwork-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100vw;
+  min-height: 320px;
+  padding: 3rem 1rem 2rem 1rem;
+  color: #fff;
+  background: rgba(0,0,0,0.0);
+}
+.hero-detailwork-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin-bottom: 1.2rem;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.3);
+}
+.hero-detailwork-subtitle {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+@media (max-width: 900px) {
+  .hero-detailwork-title { font-size: 1.5rem; }
+  .hero-detailwork-section, .hero-detailwork-overlay { min-height: 180px; }
+}
 </style>
 <script>
 const furnitures = <?= json_encode($furnitures) ?>;
@@ -176,12 +226,12 @@ function renderFurnitureGrid() {
                 <div class="furniture-overlay">
                     <div class="furniture-price">Rp ${parseInt(row.harga).toLocaleString('id-ID')}</div>
                     <div class="furniture-category">${row.nama_kategori}</div>
-                </div>
+            </div>
             </div>
             <div class="furniture-info">
                 <div class="designer-name" style="text-align:center; margin: 0.7rem 0 0.3rem 0; font-weight: 600;">
                     ${row.nama_furniture.length > 32 ? row.nama_furniture.substring(0,32)+'...' : row.nama_furniture}
-                </div>
+            </div>
                 ${row.deskripsi ? `<div class="furniture-description" style="text-align:center; color: #666; font-size: 0.9rem; margin-bottom: 1rem;">${row.deskripsi.length > 100 ? row.deskripsi.substring(0,100)+'...' : row.deskripsi}</div>` : ''}
             </div>
         </a>
@@ -206,6 +256,30 @@ function gotoPage(page) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const filterButtons = document.querySelectorAll('[data-filter]');
+    // Ambil parameter cat dari URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const catParam = urlParams.get('cat');
+    let initialFilter = 'all';
+    
+    if (catParam) {
+        // Cari tombol filter yang sesuai kategori
+        filterButtons.forEach(btn => {
+            if (btn.getAttribute('data-filter') === catParam) {
+                btn.classList.add('active');
+                initialFilter = catParam;
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        filtered = furnitures.filter(f => f.nama_kategori === catParam);
+    } else {
+        filterButtons[0].classList.add('active');
+        filtered = furnitures;
+    }
+    currentPage = 1;
+    renderFurnitureGrid();
+
+    // Event click filter
     filterButtons.forEach(button => {
         button.addEventListener('click', function() {
             const filter = this.getAttribute('data-filter');
@@ -216,7 +290,6 @@ document.addEventListener('DOMContentLoaded', function() {
             renderFurnitureGrid();
         });
     });
-    renderFurnitureGrid();
 });
 </script>
 <?php

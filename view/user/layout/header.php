@@ -4,6 +4,12 @@
     }
     // Selalu include koneksi di sini
     include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
+    // Hitung jumlah item keranjang user (jika login)
+    $cart_count = 0;
+    if (isset($_SESSION['user_id'])) {
+        $uid = $_SESSION['user_id'];
+        $cart_count = $conn->query("SELECT SUM(jumlah) FROM keranjang WHERE user_id=$uid")->fetch_row()[0] ?? 0;
+    }
 ?>
 
 <!DOCTYPE html>
@@ -20,40 +26,55 @@
     <link href="https://fonts.googleapis.com/css2?family=Sansita+Swashed:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <title>Arunika Interior</title>
     <style>
-        .btn-fixed-width {
-            min-width: 130px;
-            max-width: 180px;
-            width: 150px;
-            text-align: center;
-            white-space: nowrap;
-        }
+        .navbar-arunika { background: #a48ad4; }
+        .navbar-brand { font-family: 'Sansita Swashed', cursive; font-size: 2rem; font-weight: bold; }
+        .nav-link.active, .nav-link:focus, .nav-link:hover { color: #fff !important; }
+        .search-bar { min-width: 260px; max-width: 400px; }
+        .icon-btn { background: none; border: none; position: relative; }
+        .icon-badge { position: absolute; top: -6px; right: -8px; background: #e07b87; color: #fff; border-radius: 50%; font-size: 0.8rem; min-width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+        .dropdown-menu { min-width: 180px; }
+        .sticky-top { z-index: 1030; }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-arunika sticky-top shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand font-sansita" href="/Arunika/view/user/home/index.php">Arunika Interior</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="/Arunika/view/user/home/index.php">Arunika Interior</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Arunika/view/user/services/detail_work.php">Cara Kerja</a>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/Arunika/view/user/home/index.php">Beranda</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="kategoriDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Furniture</a>
+                        <ul class="dropdown-menu" aria-labelledby="kategoriDropdown">
+                            <?php $kq = $conn->query("SELECT * FROM kategori WHERE is_active=1 ORDER BY kategori_id ASC"); while($k = $kq->fetch_assoc()): ?>
+                                <li><a class="dropdown-item" href="/Arunika/view/user/product/furniture.php?cat=<?= urlencode($k['nama_kategori']) ?>"><?= htmlspecialchars($k['nama_kategori']) ?></a></li>
+                            <?php endwhile; ?>
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Arunika/view/user/product/furniture.php">Furniture</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Ulasan</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#promo">Promo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#inspirasi">Inspirasi</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Arunika/view/user/product/furniture.php">Ulasan</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#tentang">Tentang Kami</a></li>
                 </ul>
-                <div class="d-flex ms-auto align-items-center gap-3">
+                <form class="d-flex mx-auto search-bar" role="search" action="/Arunika/view/user/product/furniture.php" method="get">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Cari produk..." aria-label="Search">
+                    <button class="btn btn-outline-light" type="submit"><i class="fa fa-search"></i></button>
+                </form>
+                <div class="d-flex align-items-center gap-2 ms-auto">
+                    <a href="#" class="icon-btn" title="Wishlist"><i class="fa fa-heart fa-lg"></i></a>
+                    <a href="/Arunika/view/user/cart/index.php" class="icon-btn position-relative" title="Keranjang">
+                        <i class="fa fa-shopping-cart fa-lg"></i>
+                        <?php if($cart_count>0): ?><span class="icon-badge"><?= $cart_count ?></span><?php endif; ?>
+                    </a>
+                    <a href="#" class="icon-btn" title="Notifikasi"><i class="fa fa-bell fa-lg"></i></a>
                     <?php if (!isset($_SESSION['user_id'])): ?>
-                        <a href="/Arunika/view/user/get_start/getting_start.php" class="btn btn-custom btn-fixed-width">Daftar</a>
-                    <?php endif; ?>
-                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <a href="/Arunika/view/auth/login.php" class="btn btn-light ms-2">Login</a>
+                        <a href="/Arunika/view/auth/registeruser.php" class="btn btn-outline-light ms-2">Daftar</a>
+                    <?php else: ?>
                         <?php
                             $foto_url = null;
                             $nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : '';
@@ -70,19 +91,18 @@
                                 $foto_url = "https://ui-avatars.com/api/?name=" . urlencode($nama_user);
                             }
                         ?>
-                        <a class="btn btn-login-custom dropdown-toggle p-0 me-2" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background:transparent; border:none; box-shadow:none; min-width:unset;">
+                        <div class="dropdown ms-2">
+                            <a class="btn btn-light dropdown-toggle p-0" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background:transparent; border:none; box-shadow:none; min-width:unset;">
                             <img src="<?= $foto_url ?>" alt="Foto Profil" class="rounded-circle" style="width:40px; height:40px; object-fit:cover; display:block;">
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                             <li><a class="dropdown-item" href="/Arunika/view/user/profile.php">Profil Saya</a></li>
+                                <li><a class="dropdown-item" href="#">Pesanan Saya</a></li>
+                                <li><a class="dropdown-item" href="#">Wishlist</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/Arunika/auth/logout.php">Logout</a></li>
                         </ul>
-                        <a href="#" class="ms-2" style="display:inline-flex; align-items:center; text-decoration:none;">
-                            <i class="fa fa-shopping-cart" style="font-size: 2rem;"></i>
-                        </a>
-                    <?php else: ?>
-                        <a href="/Arunika/view/auth/login.php" class="btn btn-login-custom btn-fixed-width">Login</a>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>

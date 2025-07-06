@@ -47,13 +47,13 @@ while ($row = $tq->fetch_assoc()) {
 <section class="hero-arunika">
   <div class="hero-arunika-bg">
     <img src="/Arunika/assets/img/interior1.jpg" alt="Hero Arunika"/>
-  </div>
+    </div>
   <div class="hero-arunika-content">
     <h1 class="hero-arunika-title">Marketplace Furniture & Interior Terlengkap</h1>
     <p class="hero-arunika-subtitle">Temukan ribuan produk furniture berkualitas, promo menarik, dan inspirasi ruang impian Anda di Arunika Interior.</p>
     <a href="/Arunika/view/user/product/furniture.php" class="hero-arunika-btn">Jelajahi Katalog</a>
     <a href="#promo" class="hero-arunika-btn btn-outline">Lihat Promo</a>
-  </div>
+</div>
 </section>
 <!-- KATEGORI UTAMA -->
 <section class="kategori-arunika">
@@ -65,7 +65,7 @@ while ($row = $tq->fetch_assoc()) {
         <div class="kategori-nama"><?= htmlspecialchars($k['nama_kategori']) ?></div>
       </a>
     <?php endforeach; ?>
-  </div>
+                </div>
 </section>
 <!-- PROMO/FLASH SALE -->
 <section class="promo-arunika" id="promo">
@@ -76,7 +76,7 @@ while ($row = $tq->fetch_assoc()) {
         <div class="alert alert-info">
           <i class="fas fa-info-circle"></i> Belum ada promo aktif saat ini.
         </div>
-      </div>
+                </div>
     <?php else: ?>
       <?php foreach (array_slice($promo,0,8) as $p): ?>
         <div class="promo-card">
@@ -93,11 +93,11 @@ while ($row = $tq->fetch_assoc()) {
             </div>
             <div class="promo-price">Rp<?= number_format($p['harga'],0,',','.') ?></div>
             <div class="promo-keterangan"><?= htmlspecialchars($p['keterangan']) ?></div>
-          </div>
+            </div>
         </div>
       <?php endforeach; ?>
     <?php endif; ?>
-  </div>
+                </div>
 </section>
 <!-- PRODUK TERLARIS/UNGGULAN -->
 <section class="unggulan-arunika">
@@ -108,9 +108,9 @@ while ($row = $tq->fetch_assoc()) {
         <img src="/Arunika/assets/img/<?= htmlspecialchars($t['gambar_furniture'] ?? 'noimage.jpg') ?>" alt="<?= htmlspecialchars($t['nama_furniture']) ?>">
         <div class="unggulan-title"><?= htmlspecialchars($t['nama_furniture']) ?></div>
         <div class="unggulan-price">Rp<?= number_format($t['harga'],0,',','.') ?></div>
-      </div>
+            </div>
     <?php endforeach; ?>
-  </div>
+                    </div>
 </section>
 <!-- KEUNGGULAN/BENEFIT -->
 <section class="benefit-arunika">
@@ -120,7 +120,7 @@ while ($row = $tq->fetch_assoc()) {
     <div class="benefit-card"><i class="fa fa-shield-alt"></i><div>Garansi Produk</div></div>
     <div class="benefit-card"><i class="fa fa-th-large"></i><div>Pilihan Lengkap</div></div>
     <div class="benefit-card"><i class="fa fa-headset"></i><div>CS Ramah</div></div>
-  </div>
+                </div>
 </section>
 <!-- TESTIMONI/ULASAN -->
 <section class="testimoni-arunika">
@@ -144,7 +144,7 @@ while ($row = $tq->fetch_assoc()) {
       <div class="testimoni-rating">★★★★★</div>
       <div class="testimoni-isi">Sangat puas belanja di Arunika, pasti akan order lagi!</div>
     </div>
-  </div>
+</div>
 </section>
 <!-- INSPIRASI RUANG (OPSIONAL) -->
 <section class="inspirasi-arunika">

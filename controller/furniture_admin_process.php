@@ -9,7 +9,7 @@ include '../config/connect.php';
 
 // Fungsi untuk upload gambar
 function uploadImage($file, $oldImage = null) {
-    $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/Arunika/assets/img/furniture/';
+    $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/Arunika/assets/img/';
     
     // Buat direktori jika belum ada
     if (!file_exists($targetDir)) {
@@ -19,8 +19,7 @@ function uploadImage($file, $oldImage = null) {
     // Jika ada file yang diupload
     if ($file['error'] === UPLOAD_ERR_OK) {
         $fileName = basename($file['name']);
-        $targetFilePath = $targetDir . $fileName;
-        $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+        $fileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         
         // Validasi tipe file
         $allowedTypes = array('jpg', 'jpeg', 'png', 'gif');
@@ -55,8 +54,8 @@ function uploadImage($file, $oldImage = null) {
 
 // Proses Tambah Furniture
 if (isset($_POST['tambah'])) {
-    $nama = trim($_POST['nama']);
-    $kategori = trim($_POST['kategori']);
+    $nama = trim($_POST['nama_furniture']);
+    $kategori = (int)$_POST['kategori_id'];
     $harga = (int)$_POST['harga'];
     $deskripsi = trim($_POST['deskripsi']);
     
@@ -69,7 +68,7 @@ if (isset($_POST['tambah'])) {
     }
     
     // Upload gambar
-    $imageResult = uploadImage($_FILES['gambar']);
+    $imageResult = uploadImage($_FILES['gambar_furniture']);
     if (!$imageResult['success']) {
         $_SESSION['message'] = $imageResult['message'];
         $_SESSION['message_type'] = 'danger';
@@ -78,8 +77,8 @@ if (isset($_POST['tambah'])) {
     }
     
     // Insert ke database
-    $stmt = $conn->prepare("INSERT INTO furniture (nama, kategori, harga, deskripsi, gambar) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssiss", $nama, $kategori, $harga, $deskripsi, $imageResult['filename']);
+    $stmt = $conn->prepare("INSERT INTO furniture (nama_furniture, kategori_id, harga, deskripsi, gambar_furniture) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("siiss", $nama, $kategori, $harga, $deskripsi, $imageResult['filename']);
     
     if ($stmt->execute()) {
         $_SESSION['message'] = 'Furniture berhasil ditambahkan!';
@@ -95,9 +94,9 @@ if (isset($_POST['tambah'])) {
 
 // Proses Edit Furniture
 if (isset($_POST['edit'])) {
-    $id = (int)$_POST['id'];
-    $nama = trim($_POST['nama']);
-    $kategori = trim($_POST['kategori']);
+    $id = (int)$_POST['furniture_id'];
+    $nama = trim($_POST['nama_furniture']);
+    $kategori = (int)$_POST['kategori_id'];
     $harga = (int)$_POST['harga'];
     $deskripsi = trim($_POST['deskripsi']);
     
@@ -105,12 +104,12 @@ if (isset($_POST['edit'])) {
     if (empty($nama) || empty($kategori) || $harga <= 0) {
         $_SESSION['message'] = 'Semua field wajib diisi dan harga harus lebih dari 0!';
         $_SESSION['message_type'] = 'danger';
-        header('Location: ../view/admin/data_furniture/edit.php?id=' . $id);
+        header('Location: ../view/admin/data_furniture/edit_furniture.php?id=' . $id);
         exit();
     }
     
     // Ambil data furniture lama
-    $stmt = $conn->prepare("SELECT gambar FROM furniture WHERE id = ?");
+    $stmt = $conn->prepare("SELECT gambar_furniture FROM furniture WHERE furniture_id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -123,20 +122,20 @@ if (isset($_POST['edit'])) {
     }
     
     $oldData = $result->fetch_assoc();
-    $oldImage = $oldData['gambar'];
+    $oldImage = $oldData['gambar_furniture'];
     
     // Upload gambar baru (jika ada)
-    $imageResult = uploadImage($_FILES['gambar'], $oldImage);
+    $imageResult = uploadImage($_FILES['gambar_furniture'], $oldImage);
     if (!$imageResult['success']) {
         $_SESSION['message'] = $imageResult['message'];
         $_SESSION['message_type'] = 'danger';
-        header('Location: ../view/admin/data_furniture/edit.php?id=' . $id);
+        header('Location: ../view/admin/data_furniture/edit_furniture.php?id=' . $id);
         exit();
     }
     
     // Update database
-    $stmt = $conn->prepare("UPDATE furniture SET nama = ?, kategori = ?, harga = ?, deskripsi = ?, gambar = ? WHERE id = ?");
-    $stmt->bind_param("ssissi", $nama, $kategori, $harga, $deskripsi, $imageResult['filename'], $id);
+    $stmt = $conn->prepare("UPDATE furniture SET nama_furniture = ?, kategori_id = ?, harga = ?, deskripsi = ?, gambar_furniture = ? WHERE furniture_id = ?");
+    $stmt->bind_param("siissi", $nama, $kategori, $harga, $deskripsi, $imageResult['filename'], $id);
     
     if ($stmt->execute()) {
         $_SESSION['message'] = 'Furniture berhasil diupdate!';
@@ -145,7 +144,7 @@ if (isset($_POST['edit'])) {
     } else {
         $_SESSION['message'] = 'Gagal mengupdate furniture!';
         $_SESSION['message_type'] = 'danger';
-        header('Location: ../view/admin/data_furniture/edit.php?id=' . $id);
+        header('Location: ../view/admin/data_furniture/edit_furniture.php?id=' . $id);
     }
     exit();
 }

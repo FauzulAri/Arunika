@@ -697,3 +697,13 @@ INSERT INTO diskon (furniture_id, tipe, nilai, tanggal_mulai, tanggal_selesai, i
 (15, 'persen', 10, NOW(), DATE_ADD(NOW(), INTERVAL 10 DAY), 1, 'Diskon Lebaran'),
 (22, 'persen', 25, NOW(), DATE_ADD(NOW(), INTERVAL 4 DAY), 1, 'Flash Sale Sofa'),
 (30, 'nominal', 100000, NOW(), DATE_ADD(NOW(), INTERVAL 6 DAY), 1, 'Promo Akhir Pekan'); 
+
+INSERT INTO orders 
+(user_id, nomor_order, total_harga, status_order, metode_pembayaran, alamat_pengiriman, nama_penerima, no_hp_penerima, catatan, tanggal_order, tanggal_konfirmasi, tanggal_pengiriman, tanggal_diterima)
+VALUES
+(1, 'ORD-20240601-0001', 3500000, 'pending', 'transfer_bank', 'Jl. Melati No. 10, Jakarta', 'Fajar Andika', '081234567890', 'Tolong kirim siang hari', '2024-06-01 09:15:00', NULL, NULL, NULL),
+(2, 'ORD-20240601-0002', 2800000, 'confirmed', 'e_wallet', 'Jl. Kenanga No. 5, Bandung', 'Rina Lestari', '082233445566', '', '2024-06-01 10:30:00', '2024-06-01 11:00:00', NULL, NULL),
+(3, 'ORD-20240602-0003', 1200000, 'processing', 'cod', 'Jl. Mawar No. 7, Surabaya', 'Maria Lestari', '083344556677', 'Rumah warna biru', '2024-06-02 08:45:00', '2024-06-02 09:00:00', '2024-06-02 13:00:00', NULL),
+(1, 'ORD-20240603-0004', 4500000, 'shipped', 'transfer_bank', 'Jl. Anggrek No. 12, Jakarta', 'Fajar Andika', '081234567890', '', '2024-06-03 14:20:00', '2024-06-03 15:00:00', '2024-06-04 09:00:00', NULL),
+(2, 'ORD-20240604-0005', 3200000, 'delivered', 'e_wallet', 'Jl. Dahlia No. 3, Bandung', 'Rina Lestari', '082233445566', 'Kirim ke lantai 2', '2024-06-04 11:10:00', '2024-06-04 12:00:00', '2024-06-04 16:00:00', '2024-06-05 10:00:00'),
+(3, 'ORD-20240605-0006', 850000, 'cancelled', 'cod', 'Jl. Flamboyan No. 8, Surabaya', 'Maria Lestari', '083344556677', 'Batal, salah alamat', '2024-06-05 09:00:00', NULL, NULL, NULL);

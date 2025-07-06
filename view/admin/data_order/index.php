@@ -22,7 +22,10 @@ $result = $conn->query($sql);
             <td><?= htmlspecialchars($row['nama_pemesan']) ?></td>
             <td><?= htmlspecialchars($row['tanggal_order']) ?></td>
             <td><?= htmlspecialchars($row['status_order']) ?></td>
-            <td><a href="edit.php?id=<?= $row['order_id'] ?>" class="btn btn-sm btn-warning">Edit</a></td>
+            <td>
+                <a href="edit_order.php?id=<?= $row['order_id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                <a href="/Arunika/controller/order_delete_process.php?id=<?= $row['order_id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus order?')">Hapus</a>
+            </td>
         </tr>
         <?php endwhile; else: ?>
         <tr><td colspan="5" class="text-center">Belum ada data order.</td></tr>

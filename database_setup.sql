@@ -20,7 +20,7 @@ CREATE TABLE user (
     tanggal_daftar TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status ENUM('online', 'offline') DEFAULT 'offline',
     last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB;
 
 -- =====================================================
 -- TABEL ADMIN
@@ -34,7 +34,7 @@ CREATE TABLE admin (
     role ENUM('super_admin', 'admin') DEFAULT 'admin',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP NULL
-);
+) ENGINE=InnoDB;
 
 -- =====================================================
 -- TABEL KATEGORI
@@ -46,7 +46,7 @@ CREATE TABLE kategori (
     icon VARCHAR(50),
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB;
 
 -- =====================================================
 -- TABEL FURNITURE
@@ -66,7 +66,7 @@ CREATE TABLE furniture (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (kategori_id) REFERENCES kategori(kategori_id) ON DELETE RESTRICT
-);
+) ENGINE=InnoDB;
 
 -- =====================================================
 -- TABEL KERANJANG
@@ -83,7 +83,7 @@ CREATE TABLE keranjang (
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
     FOREIGN KEY (furniture_id) REFERENCES furniture(furniture_id) ON DELETE CASCADE,
     UNIQUE KEY unique_user_furniture (user_id, furniture_id)
-);
+) ENGINE=InnoDB;
 
 -- =====================================================
 -- TABEL ORDERS
@@ -104,7 +104,7 @@ CREATE TABLE orders (
     tanggal_pengiriman TIMESTAMP NULL,
     tanggal_diterima TIMESTAMP NULL,
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE RESTRICT
-);
+) ENGINE=InnoDB;
 
 -- =====================================================
 -- TABEL DETAIL ORDER
@@ -118,7 +118,7 @@ CREATE TABLE detail_order (
     subtotal DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
     FOREIGN KEY (furniture_id) REFERENCES furniture(furniture_id) ON DELETE RESTRICT
-);
+) ENGINE=InnoDB;
 
 -- =====================================================
 -- TABEL REVIEW
@@ -137,7 +137,7 @@ CREATE TABLE review (
     FOREIGN KEY (furniture_id) REFERENCES furniture(furniture_id) ON DELETE CASCADE,
     FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
     UNIQUE KEY unique_user_furniture_order (user_id, furniture_id, order_id)
-);
+) ENGINE=InnoDB;
 
 -- =====================================================
 -- TABEL DISKON
@@ -154,7 +154,7 @@ CREATE TABLE diskon (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (furniture_id) REFERENCES furniture(furniture_id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB;
 
 -- =====================================================
 -- TABEL ACTIVITY LOG
@@ -170,7 +170,7 @@ CREATE TABLE activity_log (
     ip_address VARCHAR(45),
     user_agent TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB;
 
 -- =====================================================
 -- INDEXES UNTUK OPTIMASI

@@ -1,51 +1,19 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-echo "DEBUG: home/index.php loaded<br>";
-session_start();
-echo "SESSION: ";
-var_dump($_SESSION);
-
-// Cek koneksi database
-include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
-if (!$conn) {
-    echo "Koneksi database gagal!<br>";
-    exit;
-}
-echo "Koneksi database OK<br>";
-
-// Cek query kategori
-$kq = $conn->query("SELECT * FROM kategori WHERE is_active = 1 ORDER BY kategori_id ASC");
-if (!$kq) {
-    echo "Query kategori error: " . $conn->error;
-    exit;
-}
-echo "Query kategori OK<br>";
-
-// Hentikan eksekusi di sini untuk melihat output debug
-exit;
-
 ob_start();
-
 // Ambil data furniture dan kategori dari database
 include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
-
 // Ambil kategori
 $kategori = [];
 $kq = $conn->query("SELECT * FROM kategori WHERE is_active = 1 ORDER BY kategori_id ASC");
 while ($row = $kq->fetch_assoc()) {
     $kategori[] = $row;
 }
-
 // Ambil furniture
 $furnitures = [];
 $fq = $conn->query("SELECT f.*, k.nama_kategori FROM furniture f JOIN kategori k ON f.kategori_id = k.kategori_id WHERE f.is_active = 1 ORDER BY f.furniture_id DESC");
 while ($row = $fq->fetch_assoc()) {
     $furnitures[] = $row;
 }
-
 // Ambil data promo dari furniture yang memiliki diskon aktif
 $promo = [];
 $pq = $conn->query("SELECT f.*, k.nama_kategori, d.tipe, d.nilai, d.keterangan,
@@ -68,7 +36,6 @@ $pq = $conn->query("SELECT f.*, k.nama_kategori, d.tipe, d.nilai, d.keterangan,
 while ($row = $pq->fetch_assoc()) {
     $promo[] = $row;
 }
-
 // Produk terlaris (random 10 furniture)
 $terlaris = [];
 $tq = $conn->query("SELECT f.*, k.nama_kategori FROM furniture f JOIN kategori k ON f.kategori_id = k.kategori_id WHERE f.is_active = 1 ORDER BY RAND() LIMIT 10");

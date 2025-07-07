@@ -56,10 +56,19 @@ $nama_penerima = $_POST['nama_penerima'] ?? $nama;
 $no_hp_penerima = $_POST['no_hp_penerima'] ?? $no_hp;
 $catatan = $_POST['catatan'] ?? '';
 
+// JANGAN isi nomor_order, biarkan trigger yang mengisi
 $stmt = $conn->prepare("INSERT INTO orders (user_id, total_harga, status_order, metode_pembayaran, alamat_pengiriman, nama_penerima, no_hp_penerima, catatan) VALUES (?, ?, 'pending', ?, ?, ?, ?, ?)");
 $stmt->bind_param('idsssss', $user_id, $total, $metode_pembayaran, $alamat_pengiriman, $nama_penerima, $no_hp_penerima, $catatan);
 $stmt->execute();
 $new_order_id = $stmt->insert_id;
+$stmt->close();
+
+// Ambil nomor_order hasil trigger
+$stmt = $conn->prepare("SELECT nomor_order FROM orders WHERE order_id = ?");
+$stmt->bind_param('i', $new_order_id);
+$stmt->execute();
+$stmt->bind_result($nomor_order);
+$stmt->fetch();
 $stmt->close();
 
 // Pindahkan item keranjang ke detail_order
@@ -74,14 +83,6 @@ foreach ($items as $item) {
 $stmt = $conn->prepare("DELETE FROM keranjang WHERE user_id = ? AND keranjang_id IN ($placeholders)");
 $stmt->bind_param('i' . str_repeat('i', count($keranjang_ids)), $user_id, ...$keranjang_ids);
 $stmt->execute();
-$stmt->close();
-
-// Ambil nomor_order
-$stmt = $conn->prepare("SELECT nomor_order FROM orders WHERE order_id = ?");
-$stmt->bind_param('i', $new_order_id);
-$stmt->execute();
-$stmt->bind_result($nomor_order);
-$stmt->fetch();
 $stmt->close();
 
 // Buat item_details untuk Midtrans

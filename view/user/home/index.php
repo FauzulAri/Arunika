@@ -1,4 +1,31 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+echo "DEBUG: home/index.php loaded<br>";
+session_start();
+echo "SESSION: ";
+var_dump($_SESSION);
+
+// Cek koneksi database
+include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
+if (!$conn) {
+    echo "Koneksi database gagal!<br>";
+    exit;
+}
+echo "Koneksi database OK<br>";
+
+// Cek query kategori
+$kq = $conn->query("SELECT * FROM kategori WHERE is_active = 1 ORDER BY kategori_id ASC");
+if (!$kq) {
+    echo "Query kategori error: " . $conn->error;
+    exit;
+}
+echo "Query kategori OK<br>";
+
+// Hentikan eksekusi di sini untuk melihat output debug
+exit;
 
 ob_start();
 

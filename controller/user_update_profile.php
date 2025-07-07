@@ -14,7 +14,7 @@ $password = isset($_POST['password']) ? $_POST['password'] : '';
 $no_hp = trim($_POST['no_hp']);
 
 // Validasi email unik (tidak boleh sama dengan user lain)
-$stmt = $conn->prepare('SELECT user_id FROM User WHERE email = ? AND user_id != ?');
+$stmt = $conn->prepare('SELECT user_id FROM user WHERE email = ? AND user_id != ?');
 $stmt->bind_param('si', $email, $user_id);
 $stmt->execute();
 $stmt->store_result();
@@ -43,7 +43,7 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
 }
 
 // Siapkan query update
-$update_query = 'UPDATE User SET nama=?, email=?, alamat=?, no_hp=?';
+$update_query = 'UPDATE user SET nama=?, email=?, alamat=?, no_hp=?';
 $params = [$nama, $email, $alamat, $no_hp];
 $types = 'ssss';
 

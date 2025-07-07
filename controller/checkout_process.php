@@ -57,7 +57,7 @@ $no_hp_penerima = $_POST['no_hp_penerima'] ?? $no_hp;
 $catatan = $_POST['catatan'] ?? '';
 
 $stmt = $conn->prepare("INSERT INTO orders (user_id, total_harga, status_order, metode_pembayaran, alamat_pengiriman, nama_penerima, no_hp_penerima, catatan) VALUES (?, ?, 'pending', ?, ?, ?, ?, ?)");
-$stmt->bind_param('idssssss', $user_id, $total, $metode_pembayaran, $alamat_pengiriman, $nama_penerima, $no_hp_penerima, $catatan);
+$stmt->bind_param('idsssss', $user_id, $total, $metode_pembayaran, $alamat_pengiriman, $nama_penerima, $no_hp_penerima, $catatan);
 $stmt->execute();
 $new_order_id = $stmt->insert_id;
 $stmt->close();

@@ -60,8 +60,9 @@ $catatan = $_POST['catatan'] ?? '';
 $nomor_order = 'ORD-' . date('YmdHis') . '-' . rand(1000,9999);
 
 // Insert ke database dengan nomor_order tersebut
-$stmt = $conn->prepare("INSERT INTO orders (user_id, nomor_order, total_harga, status_order, metode_pembayaran, alamat_pengiriman, nama_penerima, no_hp_penerima, catatan) VALUES (?, ?, ?, 'pending', ?, ?, ?, ?, ?)");
-$stmt->bind_param('isdsssss', $user_id, $nomor_order, $total, $metode_pembayaran, $alamat_pengiriman, $nama_penerima, $no_hp_penerima, $catatan);
+$status_order = 'pending';
+$stmt = $conn->prepare("INSERT INTO orders (user_id, nomor_order, total_harga, status_order, metode_pembayaran, alamat_pengiriman, nama_penerima, no_hp_penerima, catatan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param('isdssssss', $user_id, $nomor_order, $total, $status_order, $metode_pembayaran, $alamat_pengiriman, $nama_penerima, $no_hp_penerima, $catatan);
 $stmt->execute();
 $new_order_id = $stmt->insert_id;
 $stmt->close();

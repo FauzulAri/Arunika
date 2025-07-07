@@ -57,7 +57,7 @@ $no_hp_penerima = $_POST['no_hp_penerima'] ?? $no_hp;
 $catatan = $_POST['catatan'] ?? '';
 
 // Generate nomor_order sesuai format Midtrans
-$nomor_order = 'ORD-' . date('YmdHis') . '-' . rand(1000,9999);
+$nomor_order = 'ORD' . date('YmdHis') . rand(1000,9999);
 
 // Insert ke database dengan nomor_order tersebut
 $status_order = 'pending';

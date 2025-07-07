@@ -28,16 +28,8 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
             $_SESSION['user_id'] = $user_id;
             $_SESSION['nama'] = $nama;
             $_SESSION['email'] = $email;
-            $_SESSION['role'] = 'user';
-            // Debug session sebelum redirect
-            echo '<pre>SESSION: '; print_r($_SESSION); echo '</pre>';
-            // Cek apakah session benar-benar terset
-            if (!headers_sent()) {
-                header('Location: /Arunika/view/user/home/index.php');
-                exit();
-            } else {
-                echo '<br>Header sudah terkirim, tidak bisa redirect.';
-            }
+            header('Location: /Arunika/view/user/home/index.php');
+            exit();
         } else {
             echo "<script>alert('Email atau kata sandi salah!'); window.location='/Arunika/view/auth/login.php';</script>";
         }

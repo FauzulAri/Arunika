@@ -14,15 +14,12 @@ $transaction_status = $notif['transaction_status'] ?? null;
 $fraud_status = $notif['fraud_status'] ?? null;
 
 if ($order_id && $transaction_status) {
-    // Potong order_id jadi 3 bagian pertama agar cocok dengan database
-    $order_id_parts = explode('-', $order_id);
-    $order_id_db = implode('-', array_slice($order_id_parts, 0, 3));
+    // Karena tidak ada pemisah, langsung pakai $order_id
+    // Jika Midtrans menambah kode unik di belakang, kamu harus tahu berapa panjang $nomor_order yang kamu generate
+    $panjang_nomor_order = 20; // contoh: ORD + 14 digit tanggal + 4 digit random = 3+14+4=21, cek sesuai generatormu
 
-    // Logging untuk debug
-    file_put_contents('notif_log.txt', "order_id dari notif: $order_id\n", FILE_APPEND);
-    file_put_contents('notif_log.txt', "order_id_db: $order_id_db\n", FILE_APPEND);
+    $order_id_db = substr($order_id, 0, $panjang_nomor_order);
 
-    // Update status jika settlement atau capture-accept
     if (
         $transaction_status == 'settlement' ||
         ($transaction_status == 'capture' && $fraud_status == 'accept')

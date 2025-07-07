@@ -22,15 +22,17 @@ if ($order_id) {
 
     $status = json_decode($response, true);
 
-    // Ambil data detail pembayaran
+    // Mapping status Midtrans ke status order Arunika
     $transaction_status = $status['transaction_status'] ?? '';
     $payment_type = $status['payment_type'] ?? null;
-    $va_number = null;
-    $bank = null;
-    $channel = null;
     $metode_pembayaran = null;
 
-    // Mapping status Midtrans ke status order Arunika
+    if ($payment_type == 'bank_transfer' && isset($status['va_numbers'][0]['bank'])) {
+        $metode_pembayaran = strtoupper($status['va_numbers'][0]['bank']); // Contoh: BCA, MANDIRI
+    } else if ($payment_type) {
+        $metode_pembayaran = strtoupper($payment_type); // Contoh: GOPAY, SHOPEEPAY, QRIS, DLL
+    }
+
     $status_order = 'pending';
     if ($transaction_status == 'settlement' || $transaction_status == 'capture') {
         $status_order = 'sedang diproses';
@@ -40,20 +42,9 @@ if ($order_id) {
         $status_order = 'dibatalkan';
     }
 
-    // Contoh untuk bank_transfer/VA
-    if ($payment_type == 'bank_transfer' && isset($status['va_numbers'][0])) {
-        $va_number = $status['va_numbers'][0]['va_number'] ?? null;
-        $bank = strtoupper($status['va_numbers'][0]['bank'] ?? '');
-        $channel = $status['permata_va_number'] ? 'Permata' : $bank;
-        $metode_pembayaran = $bank; // Simpan nama bank (BCA, MANDIRI, dst)
-    } else if ($payment_type) {
-        // Untuk e-wallet, QRIS, dll, simpan payment_type saja
-        $metode_pembayaran = strtoupper($payment_type);
-    }
-
-    // Update ke database
-    $stmt = $conn->prepare("UPDATE orders SET status_order = ?, metode_pembayaran = ?, va_number = ?, bank = ?, channel = ? WHERE nomor_order = ?");
-    $stmt->bind_param('ssssss', $status_order, $metode_pembayaran, $va_number, $bank, $channel, $order_id);
+    // Update hanya kolom yang diperlukan
+    $stmt = $conn->prepare("UPDATE orders SET status_order = ?, metode_pembayaran = ? WHERE nomor_order = ?");
+    $stmt->bind_param('sss', $status_order, $metode_pembayaran, $order_id);
     $stmt->execute();
     $stmt->close();
 }

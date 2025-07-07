@@ -15,7 +15,7 @@ $transaction_status = $notif['transaction_status'] ?? null;
 if ($order_id && $transaction_status) {
     // Ambil hanya 3 bagian pertama dari order_id
     $order_id_parts = explode('-', $order_id);
-    $order_id_db = implode('-', array_slice($order_id_parts, 0, 23));
+    $order_id_db = implode('-', array_slice($order_id_parts, 0, 3));
 
     if ($transaction_status == 'settlement' || $transaction_status == 'capture') {
         $stmt = $conn->prepare("UPDATE orders SET status_order = 'diproses' WHERE nomor_order = ?");

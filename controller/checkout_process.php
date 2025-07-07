@@ -113,10 +113,14 @@ $data = [
     ]
 ];
 
-$server_key = 'Mid-server-xxxxxx'; // Ganti dengan server key Anda
+// GUNAKAN SERVER KEY SANDBOX MIDTRANS YANG BENAR!
+$server_key = 'Mid-server-vxsYmfYmV9JC_bpbCM3cV_C7'; // Ganti dengan server key sandbox Anda dari dashboard Midtrans
 $auth = base64_encode($server_key . ':');
 
-$ch = curl_init('https://api.sandbox.midtrans.com/v1/payment-links');
+// Endpoint sandbox
+$midtrans_url = 'https://api.sandbox.midtrans.com/v1/payment-links';
+
+$ch = curl_init($midtrans_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
@@ -140,7 +144,12 @@ if (isset($result['payment_url'])) {
     $stmt->execute();
     $stmt->close();
 } else {
-    die('Gagal membuat payment link: ' . htmlspecialchars($response));
+    // Tampilkan error detail jika unauthorized
+    if (isset($result['error_messages'])) {
+        die('Gagal membuat payment link: ' . json_encode($result));
+    } else {
+        die('Gagal membuat payment link: ' . htmlspecialchars($response));
+    }
 }
 
 // Redirect ke halaman Pesanan Saya

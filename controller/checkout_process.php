@@ -94,18 +94,30 @@ $item_details = array_map(function($item) {
 $data = [
     "transaction_details" => [
         "order_id" => $nomor_order,
-        "gross_amount" => (int)$total
+        "gross_amount" => (int)$total,
+        "payment_type" => $metode_pembayaran,
+        "status" => "pending"
     ],
     "customer_details" => [
         "first_name" => $nama_penerima,
         "email" => $email_user,
-        "phone" => $no_hp_penerima
+        "phone" => $no_hp_penerima,
+        "address" => $alamat_pengiriman
     ],
     "item_details" => $item_details,
     "usage_limit" => 1,
     "expiry" => [
         "duration" => 1,
         "unit" => "days"
+    ],
+    "shipping_address" => [
+        "first_name" => $nama_penerima,
+        "email" => $email_user,
+        "phone" => $no_hp_penerima,
+        "address" => $alamat_pengiriman
+    ],
+    "callbacks" => [
+        "finish" => "http://arunika.42web.io/Arunika/view/user/order/index.php?nomor_order=" . $nomor_order
     ]
 ];
 
@@ -139,6 +151,9 @@ if (isset($result['payment_url'])) {
     $stmt->bind_param('si', $payment_link, $new_order_id);
     $stmt->execute();
     $stmt->close();
+    // Redirect langsung ke payment link
+    header('Location: ' . $payment_link);
+    exit();
 } else {
     // Tampilkan error detail jika unauthorized
     if (isset($result['error_messages'])) {
@@ -146,8 +161,4 @@ if (isset($result['payment_url'])) {
     } else {
         die('Gagal membuat payment link: ' . htmlspecialchars($response));
     }
-}
-
-// Redirect ke halaman Pesanan Saya
-header('Location: /Arunika/view/user/order/index.php');
-exit(); 
+} 

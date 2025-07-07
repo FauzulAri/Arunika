@@ -137,7 +137,7 @@ ob_start();
                 <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-shopping-cart"></i> + Keranjang</button>
               </div>
             </form>
-            <form method="post" action="/Arunika/controller/keranjang_add.php" id="form-beli">
+            <form method="post" action="/Arunika/controller/checkout_direct.php" id="form-beli">
               <input type="hidden" name="furniture_id" value="<?= $f['furniture_id'] ?>">
               <input type="hidden" name="jumlah" id="jumlah-beli" value="1">
               <input type="hidden" name="catatan" id="catatan-beli">

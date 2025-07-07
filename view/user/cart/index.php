@@ -105,7 +105,10 @@ ob_start();
           <span id="cart-total" class="fw-bold">Rp0</span>
         </div>
         <div id="cart-info-promo" class="alert alert-info py-2 small mb-3">Pilih barang dulu sebelum pakai promo</div>
-        <button class="btn btn-success w-100" id="checkout-btn" disabled>Beli</button>
+        <form id="checkout-form" method="post" action="/Arunika/view/user/cart/checkout.php">
+          <input type="hidden" name="keranjang_ids" id="keranjang-ids">
+          <button type="submit" class="btn btn-success w-100" id="checkout-btn" disabled>Beli</button>
+        </form>
       </div>
     </div>
   </div>
@@ -260,6 +263,34 @@ rekomBtns.forEach(btn => {
       attachChecklistEvents();
     }
   });
+});
+
+function getCheckedKeranjangIds() {
+  let ids = [];
+  document.querySelectorAll('.cart-check:checked').forEach(cb => {
+    const item = cb.closest('.cart-item');
+    if(item) ids.push(item.getAttribute('data-id'));
+  });
+  return ids;
+}
+// Update hidden input setiap kali checklist berubah
+function updateCheckoutIds() {
+  const ids = getCheckedKeranjangIds();
+  document.getElementById('keranjang-ids').value = ids.join(',');
+}
+document.querySelectorAll('.cart-check').forEach(cb => {
+  cb.addEventListener('change', updateCheckoutIds);
+});
+selectAll && selectAll.addEventListener('change', updateCheckoutIds);
+// Juga update saat halaman load
+updateCheckoutIds();
+// Validasi sebelum submit
+const checkoutForm = document.getElementById('checkout-form');
+checkoutForm && checkoutForm.addEventListener('submit', function(e){
+  if(!document.getElementById('keranjang-ids').value) {
+    e.preventDefault();
+    alert('Pilih minimal 1 barang untuk checkout!');
+  }
 });
 </script>
 <?php

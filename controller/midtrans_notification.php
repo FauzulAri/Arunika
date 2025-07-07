@@ -13,14 +13,16 @@ $order_id = $notif['order_id'] ?? null;
 $transaction_status = $notif['transaction_status'] ?? null;
 
 if ($order_id && $transaction_status) {
-    // Jika pembayaran sukses (settlement/capture), update status order
+    // Ambil hanya 3 bagian pertama dari order_id
+    $order_id_parts = explode('-', $order_id);
+    $order_id_db = implode('-', array_slice($order_id_parts, 0, 23));
+
     if ($transaction_status == 'settlement' || $transaction_status == 'capture') {
         $stmt = $conn->prepare("UPDATE orders SET status_order = 'diproses' WHERE nomor_order = ?");
-        $stmt->bind_param('s', $order_id);
+        $stmt->bind_param('s', $order_id_db);
         $stmt->execute();
         $stmt->close();
     }
-    // Kamu juga bisa handle status lain seperti cancel, expire, dsb.
 }
 
 http_response_code(200); // Beri response OK ke Midtrans

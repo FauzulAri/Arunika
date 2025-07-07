@@ -50,7 +50,7 @@ if (empty($items)) {
 }
 
 // Buat order di database
-$metode_pembayaran = 'transfer_bank'; // default, bisa disesuaikan
+$metode_pembayaran = null; // atau ''
 $alamat_pengiriman = $_POST['alamat_pengiriman'] ?? $alamat;
 $nama_penerima = $_POST['nama_penerima'] ?? $nama;
 $no_hp_penerima = $_POST['no_hp_penerima'] ?? $no_hp;

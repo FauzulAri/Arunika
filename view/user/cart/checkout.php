@@ -100,14 +100,6 @@ ob_start();
             <span>Total</span>
             <span class="fw-bold fs-5 text-success">Rp<?= number_format($total,0,',','.') ?></span>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Metode Pembayaran</label>
-            <select name="metode_pembayaran" class="form-select" required>
-              <option value="transfer_bank">Transfer Bank</option>
-              <option value="e_wallet">E-Wallet</option>
-              <option value="cod">Bayar di Tempat (COD)</option>
-            </select>
-          </div>
           <button type="submit" class="btn btn-success btn-lg w-100">Konfirmasi & Bayar</button>
           <a href="index.php" class="btn btn-secondary w-100 mt-2">Kembali ke Keranjang</a>
         </div>

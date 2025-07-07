@@ -123,7 +123,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                             <li><a class="dropdown-item" href="/Arunika/view/user/profile.php">Profil Saya</a></li>
-                                <li><a class="dropdown-item" href="#">Pesanan Saya</a></li>
+                                <li><a class="dropdown-item" href="/Arunika/view/user/order/index.php">Pesanan Saya</a></li>
                                 <li><a class="dropdown-item" href="#">Wishlist</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/Arunika/auth/logout.php">Logout</a></li>

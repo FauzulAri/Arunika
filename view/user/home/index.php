@@ -96,15 +96,15 @@ while ($row = $tq->fetch_assoc()) {
                 </div>
                 <div class="promo-price">Rp<?= number_format($p['harga'],0,',','.') ?></div>
                 <div class="promo-keterangan"><?= htmlspecialchars($p['keterangan']) ?></div>
-              </div>
+            </div>
             </a>
-          </div>
+                    </div>
         <?php endforeach; ?>
       <?php endif; ?>
     </div>
     <div class="swiper-button-next"></div>
     <div class="swiper-button-prev"></div>
-  </div>
+</div>
 </section>
 
 <!-- REKOMENDASI UNTUK ANDA -->
@@ -118,7 +118,7 @@ while ($row = $tq->fetch_assoc()) {
         <div class="unggulan-price">Rp<?= number_format($t['harga'],0,',','.') ?></div>
       </a>
     <?php endforeach; ?>
-  </div>
+            </div>
 </section>
 
 <!-- KEUNGGULAN/BENEFIT -->
@@ -532,7 +532,7 @@ document.querySelectorAll('.kategori-link').forEach(btn => {
     e.preventDefault();
     const kategori = this.getAttribute('data-kategori');
     filterFurnitureByKategori(kategori);
-  });
+    });
 });
 // Swiper promo carousel
 var swiper = new Swiper('.promo-carousel', {

@@ -1,0 +1,99 @@
+Array
+(
+    [status_code] => 201
+    [status_message] => Success, transaction is found
+    [transaction_id] => d68013db-2cc6-4725-ba46-18a949183a15
+    [order_id] => ORD-20250707150218-6501
+    [gross_amount] => 6070000.00
+    [payment_type] => bank_transfer
+    [transaction_time] => 2025-07-07 20:02:20
+    [transaction_status] => pending
+    [fraud_status] => accept
+    [va_numbers] => Array
+        (
+            [0] => Array
+                (
+                    [bank] => bca
+                    [va_number] => 04891674329639413170842
+                )
+
+        )
+
+    [bca_va_number] => 04891674329639413170842
+    [pdf_url] => https://app.sandbox.midtrans.com/snap/v1/transactions/1755e579-08ef-428d-8a9b-db41da05baae/pdf
+    [finish_redirect_url] => http://example.com?order_id=ORD-20250707150218-6501&status_code=201&transaction_status=pending
+)
+Array
+(
+    [status_code] => 201
+    [status_message] => Your Transaction is being processed
+    [transaction_id] => 1b6c6292-fff1-4450-875c-db26391dcc45
+    [order_id] => ORD-20250707150956-5797
+    [gross_amount] => 4720000.00
+    [payment_type] => bank_transfer
+    [transaction_time] => 2025-07-07 20:09:57
+    [transaction_status] => pending
+    [fraud_status] => accept
+    [va_numbers] => Array
+        (
+            [0] => Array
+                (
+                    [bank] => bca
+                    [va_number] => 04891629372565846636174
+                )
+
+        )
+
+    [bca_va_number] => 04891629372565846636174
+    [pdf_url] => https://app.sandbox.midtrans.com/snap/v1/transactions/788ba2ca-c770-417c-9750-4d97e82c5261/pdf
+    [finish_redirect_url] => http://example.com?order_id=ORD-20250707150956-5797&status_code=201&transaction_status=pending
+)
+Array
+(
+    [status_code] => 201
+    [status_message] => Success, transaction is found
+    [transaction_id] => 6fffdcf9-02fa-4a15-afc7-63a12b4902b5
+    [order_id] => ORD-20250707151328-7178
+    [gross_amount] => 1700000.00
+    [payment_type] => bank_transfer
+    [transaction_time] => 2025-07-07 20:13:30
+    [transaction_status] => pending
+    [fraud_status] => accept
+    [va_numbers] => Array
+        (
+            [0] => Array
+                (
+                    [bank] => bri
+                    [va_number] => 048911224716570181
+                )
+
+        )
+
+    [pdf_url] => https://app.sandbox.midtrans.com/snap/v1/transactions/b8bc47fb-466b-40b9-8be6-188624b4235c/pdf
+    [finish_redirect_url] => http://example.com?order_id=ORD-20250707151328-7178&status_code=201&transaction_status=pending
+)
+Array
+(
+    [status_code] => 201
+    [status_message] => Your Transaction is being processed
+    [transaction_id] => d2ba57d1-ff8a-44b6-9032-dc482aa1234b
+    [order_id] => ORD-20250707153302-7914
+    [gross_amount] => 5500000.00
+    [payment_type] => bank_transfer
+    [transaction_time] => 2025-07-07 20:33:05
+    [transaction_status] => pending
+    [fraud_status] => accept
+    [va_numbers] => Array
+        (
+            [0] => Array
+                (
+                    [bank] => bca
+                    [va_number] => 04891145186044883160162
+                )
+
+        )
+
+    [bca_va_number] => 04891145186044883160162
+    [pdf_url] => https://app.sandbox.midtrans.com/snap/v1/transactions/8d27e347-376a-45ab-bfc8-953e66950932/pdf
+    [finish_redirect_url] => http://example.com?order_id=ORD-20250707153302-7914&status_code=201&transaction_status=pending
+)

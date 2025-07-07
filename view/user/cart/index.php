@@ -83,11 +83,13 @@ ob_start();
           <?php foreach ($rekom as $r): ?>
             <div class="col">
               <div class="card h-100 shadow-sm border-0">
-                <img src="/Arunika/assets/img/<?= htmlspecialchars($r['gambar_furniture'] ?? 'noimage.jpg') ?>" class="card-img-top" alt="<?= htmlspecialchars($r['nama_furniture']) ?>" style="height:140px;object-fit:cover;">
-                <div class="card-body d-flex flex-column">
+                <a href="/Arunika/view/user/product/detail.php?id=<?= $r['furniture_id'] ?>" style="text-decoration:none; color:inherit;">
+                  <img src="/Arunika/assets/img/<?= htmlspecialchars($r['gambar_furniture'] ?? 'noimage.jpg') ?>" class="card-img-top" alt="<?= htmlspecialchars($r['nama_furniture']) ?>" style="height:140px;object-fit:cover;">
                   <div class="fw-bold mb-1 text-center" style="font-size:1rem;min-height:38px;">
                     <?= htmlspecialchars($r['nama_furniture']) ?>
                   </div>
+                </a>
+                <div class="card-body d-flex flex-column">
                   <div class="mb-2 text-muted text-center" style="font-size:0.95rem;">Rp<?= number_format($r['harga'],0,',','.') ?></div>
                   <button type="button" class="btn btn-sm btn-success w-100 mt-auto btn-rekom-add" data-id="<?= $r['furniture_id'] ?>"><i class="fa fa-cart-plus"></i> + Keranjang</button>
                 </div>
@@ -173,6 +175,7 @@ function attachChecklistEvents() {
       let checked = document.querySelectorAll('.cart-check:checked').length;
       selectAll.checked = (all === checked);
       updateTotal();
+      updateCheckoutIds();
     });
   });
   updateJenisBarangLabel();
@@ -181,6 +184,7 @@ function attachChecklistEvents() {
 // Inisialisasi total dan checklist event
 updateTotal();
 attachChecklistEvents();
+updateCheckoutIds();
 
 // --- AJAX KERANJANG ---
 function showToast(msg, type='success') {
@@ -235,6 +239,12 @@ cartList.addEventListener('click', async function(e) {
       showToast(data.message, 'success');
       updateTotal();
       attachChecklistEvents();
+      // Tambahan: jika sudah tidak ada cart-item, tampilkan pesan keranjang kosong
+      if(document.querySelectorAll('.cart-item').length === 0) {
+        cartList.innerHTML = '<div class="alert alert-info">Keranjang kosong.</div>';
+        cartTotal.innerText = 'Rp0';
+        checkoutBtn.disabled = true;
+      }
     }else{
       showToast(data.message, 'danger');
     }
@@ -261,6 +271,7 @@ rekomBtns.forEach(btn => {
       cartList.innerHTML = cartHtml;
       updateTotal();
       attachChecklistEvents();
+      updateCheckoutIds();
     }
   });
 });

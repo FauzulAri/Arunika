@@ -105,7 +105,7 @@
                             $foto_url = null;
                             $nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : '';
                             $user_id = $_SESSION['user_id'];
-                            $stmt = $conn->prepare('SELECT foto FROM User WHERE user_id = ?');
+                            $stmt = $conn->prepare('SELECT foto FROM user WHERE user_id = ?');
                             $stmt->bind_param('i', $user_id);
                             $stmt->execute();
                             $stmt->bind_result($foto);

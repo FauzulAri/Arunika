@@ -8,28 +8,25 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: /Arunika/view/auth/login.php');
     exit();
 }
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/vendor/autoload.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 
-// Konfigurasi MIDTRANS
-\Midtrans\Config::$serverKey = 'Mid-server-vxsYmfYmV9JC_bpbCM3cV_C7'; // Ganti dengan server key Midtrans Anda
-\Midtrans\Config::$isProduction = false;
-\Midtrans\Config::$isSanitized = true;
-\Midtrans\Config::$is3ds = true;
-
 $user_id = $_SESSION['user_id'];
+// Ambil data keranjang, user, dll sesuai kebutuhan Anda
+// Contoh:
 $keranjang_ids = isset($_POST['keranjang_ids']) ? array_filter(explode(',', $_POST['keranjang_ids'])) : [];
-$alamat_pengiriman = trim($_POST['alamat_pengiriman'] ?? '');
-$nama_penerima = trim($_POST['nama_penerima'] ?? '');
-$no_hp_penerima = trim($_POST['no_hp_penerima'] ?? '');
-$catatan = trim($_POST['catatan'] ?? '');
-
-if (empty($keranjang_ids) || !$alamat_pengiriman || !$nama_penerima || !$no_hp_penerima) {
-    echo '<div class="container py-5 text-center"><h3>Data checkout tidak lengkap.</h3><a href="/Arunika/view/user/cart/index.php" class="btn btn-primary mt-3">Kembali ke Keranjang</a></div>';
-    exit();
+if (empty($keranjang_ids)) {
+    die('Tidak ada barang yang dipilih.');
 }
 
-// Ambil data keranjang terpilih
+// Ambil data user
+$stmt = $conn->prepare("SELECT nama, email, alamat, no_hp FROM user WHERE user_id = ?");
+$stmt->bind_param('i', $user_id);
+$stmt->execute();
+$stmt->bind_result($nama, $email_user, $alamat, $no_hp);
+$stmt->fetch();
+$stmt->close();
+
+// Ambil data keranjang
 $placeholders = implode(',', array_fill(0, count($keranjang_ids), '?'));
 $types = str_repeat('i', count($keranjang_ids));
 $params = $keranjang_ids;
@@ -47,53 +44,52 @@ while ($row = $res->fetch_assoc()) {
     $total += $row['subtotal'];
 }
 $stmt->close();
+
 if (empty($items)) {
-    echo '<div class="container py-5 text-center"><h3>Barang tidak ditemukan di keranjang.</h3><a href="/Arunika/view/user/cart/index.php" class="btn btn-primary mt-3">Kembali ke Keranjang</a></div>';
-    exit();
+    die('Barang tidak ditemukan di keranjang.');
 }
 
-// Buat order_id unik
-$order_id = 'ORD-' . date('YmdHis') . '-' . rand(1000,9999);
+// Buat order di database
+$metode_pembayaran = 'transfer_bank'; // default, bisa disesuaikan
+$alamat_pengiriman = $_POST['alamat_pengiriman'] ?? $alamat;
+$nama_penerima = $_POST['nama_penerima'] ?? $nama;
+$no_hp_penerima = $_POST['no_hp_penerima'] ?? $no_hp;
+$catatan = $_POST['catatan'] ?? '';
 
-// Simpan order ke database (status pending, belum dibayar)
-$stmt = $conn->prepare("INSERT INTO orders (user_id, nomor_order, total_harga, status_order, metode_pembayaran, alamat_pengiriman, nama_penerima, no_hp_penerima, catatan) VALUES (?, ?, ?, 'pending', 'payment_link', ?, ?, ?, ?)");
-$stmt->bind_param('isdssss', $user_id, $order_id, $total, $alamat_pengiriman, $nama_penerima, $no_hp_penerima, $catatan);
+$stmt = $conn->prepare("INSERT INTO orders (user_id, total_harga, status_order, metode_pembayaran, alamat_pengiriman, nama_penerima, no_hp_penerima, catatan) VALUES (?, ?, 'pending', ?, ?, ?, ?, ?)");
+$stmt->bind_param('idssssss', $user_id, $total, $metode_pembayaran, $alamat_pengiriman, $nama_penerima, $no_hp_penerima, $catatan);
 $stmt->execute();
-$new_order_id = $conn->insert_id;
+$new_order_id = $stmt->insert_id;
 $stmt->close();
 
-// Simpan detail order
+// Pindahkan item keranjang ke detail_order
 foreach ($items as $item) {
     $stmt = $conn->prepare("INSERT INTO detail_order (order_id, furniture_id, jumlah, harga_satuan, subtotal) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param('iiidd', $new_order_id, $item['furniture_id'], $item['jumlah'], $item['harga'], $item['subtotal']);
     $stmt->execute();
     $stmt->close();
 }
-// Hapus item dari keranjang user
-$del_placeholders = implode(',', array_fill(0, count($keranjang_ids), '?'));
-$del_types = str_repeat('i', count($keranjang_ids));
-$del_params = $keranjang_ids;
-$del_params[] = $user_id;
-$del_types .= 'i';
-$stmt = $conn->prepare("DELETE FROM keranjang WHERE keranjang_id IN ($del_placeholders) AND user_id = ?");
-$stmt->bind_param($del_types, ...$del_params);
+
+// Hapus keranjang user
+$stmt = $conn->prepare("DELETE FROM keranjang WHERE user_id = ? AND keranjang_id IN ($placeholders)");
+$stmt->bind_param('i' . str_repeat('i', count($keranjang_ids)), $user_id, ...$keranjang_ids);
 $stmt->execute();
 $stmt->close();
 
-// Ambil email user
-$stmt = $conn->prepare('SELECT email FROM user WHERE user_id = ?');
-$stmt->bind_param('i', $user_id);
+// Ambil nomor_order
+$stmt = $conn->prepare("SELECT nomor_order FROM orders WHERE order_id = ?");
+$stmt->bind_param('i', $new_order_id);
 $stmt->execute();
-$stmt->bind_result($email_user);
+$stmt->bind_result($nomor_order);
 $stmt->fetch();
 $stmt->close();
 
-// Buat item_details untuk Payment Link
+// Buat item_details untuk Midtrans
 $item_details = array_map(function($item) {
     return [
         "id" => $item['furniture_id'],
-        "price" => $item['harga'],
-        "quantity" => $item['jumlah'],
+        "price" => (int)$item['harga'],
+        "quantity" => (int)$item['jumlah'],
         "name" => $item['nama_furniture']
     ];
 }, $items);
@@ -101,8 +97,8 @@ $item_details = array_map(function($item) {
 // Data untuk Payment Link API
 $data = [
     "transaction_details" => [
-        "order_id" => $order_id,
-        "gross_amount" => $total
+        "order_id" => $nomor_order,
+        "gross_amount" => (int)$total
     ],
     "customer_details" => [
         "first_name" => $nama_penerima,
@@ -117,7 +113,7 @@ $data = [
     ]
 ];
 
-$server_key = 'Mid-server-vxsYmfYmV9JC_bpbCM3cV_C7'; // Ganti dengan server key Anda
+$server_key = 'Mid-server-xxxxxx'; // Ganti dengan server key Anda
 $auth = base64_encode($server_key . ':');
 
 $ch = curl_init('https://api.sandbox.midtrans.com/v1/payment-links');
@@ -131,23 +127,22 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 $response = curl_exec($ch);
 if (curl_errno($ch)) {
-    echo '<div class="container py-5 text-center"><h3>Curl error: ' . curl_error($ch) . '</h3></div>';
-    exit();
+    die('Curl error: ' . curl_error($ch));
 }
 curl_close($ch);
 
 $result = json_decode($response, true);
 if (isset($result['payment_url'])) {
     $payment_link = $result['payment_url'];
-    // Simpan $payment_link ke database
+    // Simpan payment_link ke database
     $stmt = $conn->prepare("UPDATE orders SET payment_link = ? WHERE order_id = ?");
     $stmt->bind_param('si', $payment_link, $new_order_id);
     $stmt->execute();
     $stmt->close();
 } else {
-    echo '<div class="container py-5 text-center"><h3>Gagal membuat payment link: ' . htmlspecialchars($response) . '</h3></div>';
-    exit();
+    die('Gagal membuat payment link: ' . htmlspecialchars($response));
 }
+
 // Redirect ke halaman Pesanan Saya
 header('Location: /Arunika/view/user/order/index.php');
 exit(); 

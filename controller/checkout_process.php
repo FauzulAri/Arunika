@@ -152,6 +152,13 @@ if (isset($result['payment_url'])) {
     $stmt->bind_param('si', $payment_link, $new_order_id);
     $stmt->execute();
     $stmt->close();
+
+    // Update status_order menjadi 'sedang diproses' setelah redirect ke payment link
+    $stmt = $conn->prepare("UPDATE orders SET status_order = 'sedang diproses' WHERE order_id = ?");
+    $stmt->bind_param('i', $new_order_id);
+    $stmt->execute();
+    $stmt->close();
+
     // Redirect langsung ke payment link
     header('Location: ' . $payment_link);
     exit();

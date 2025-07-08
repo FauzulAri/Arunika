@@ -1,8 +1,25 @@
 <?php
 include $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
-$result = $conn->query("SELECT f.*, k.nama_kategori FROM furniture f LEFT JOIN kategori k ON f.kategori_id = k.kategori_id ORDER BY f.furniture_id DESC");
+
+$search = isset($_GET['q']) ? trim($_GET['q']) : '';
+if ($search !== '') {
+    $stmt = $conn->prepare("SELECT f.*, k.nama_kategori FROM furniture f LEFT JOIN kategori k ON f.kategori_id = k.kategori_id WHERE f.nama_furniture LIKE ? ORDER BY f.furniture_id DESC");
+    $like = "%$search%";
+    $stmt->bind_param('s', $like);
+    $stmt->execute();
+    $result = $stmt->get_result();
+} else {
+    $result = $conn->query("SELECT f.*, k.nama_kategori FROM furniture f LEFT JOIN kategori k ON f.kategori_id = k.kategori_id ORDER BY f.furniture_id DESC");
+}
 ob_start();
 ?>
+
+<form method="GET" class="mb-3" action="">
+    <div class="input-group" style="max-width: 400px;">
+        <input type="text" class="form-control" name="q" placeholder="Cari nama furniture..." value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
+        <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Cari</button>
+    </div>
+</form>
 
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">

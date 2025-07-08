@@ -3,6 +3,14 @@
 
 // Ambil data notifikasi dari Midtrans
 $json = file_get_contents('php://input');
+
+// Log data mentah
+$log_text = "RAW JSON: $json";
+$stmt = $conn->prepare("INSERT INTO webhook_log (log_text) VALUES (?)");
+$stmt->bind_param('s', $log_text);
+$stmt->execute();
+$stmt->close();
+
 $notif = json_decode($json, true);
 
 // Koneksi ke database
@@ -20,6 +28,7 @@ $stmt->bind_param('s', $log_text);
 $stmt->execute();
 $stmt->close();
 // --- END DEBUG ---
+
 
     // Ambil bagian sebelum tanda strip (jika ada)
     $order_id_db = explode('-', $order_id)[0];

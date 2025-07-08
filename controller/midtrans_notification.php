@@ -21,7 +21,6 @@ $stmt->execute();
 $stmt->close();
 // --- END DEBUG ---
 
-if ($order_id && $transaction_status) {
     // Ambil bagian sebelum tanda strip (jika ada)
     $order_id_db = explode('-', $order_id)[0];
 
@@ -55,7 +54,7 @@ if ($order_id && $transaction_status) {
         $stmt->close();
         // --- END DEBUG ---
     }
-}
+
 
 http_response_code(200); // Beri response OK ke Midtrans
 echo 'OK';

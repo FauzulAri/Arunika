@@ -25,6 +25,9 @@ $result = $conn->query($sql);
             <td>
                 <a href="edit_order.php?id=<?= $row['order_id'] ?>" class="btn btn-sm btn-warning">Edit</a>
                 <a href="/Arunika/controller/order_delete_process.php?id=<?= $row['order_id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus order?')">Hapus</a>
+                <?php if ($row['status_order'] !== 'Sedang Dikirim'): ?>
+                    <a href="/Arunika/controller/order_kirim_process.php?id=<?= $row['order_id'] ?>" class="btn btn-sm btn-success" onclick="return confirm('Konfirmasi kirim order ini?')">Konfirmasi Kirim</a>
+                <?php endif; ?>
             </td>
         </tr>
         <?php endwhile; else: ?>

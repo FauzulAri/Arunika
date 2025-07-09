@@ -11,7 +11,7 @@ if ($nama && $email && $password) {
     $stmt = $conn->prepare("INSERT INTO user (nama, email, password, alamat, no_hp) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param('sssss', $nama, $email, $hash, $alamat, $no_hp);
     if ($stmt->execute()) {
-        $_SESSION['message'] = 'User berhasil ditambahkan!';
+        $_SESSION['message'] = 'user berhasil ditambahkan!';
         $_SESSION['message_type'] = 'success';
     } else {
         $_SESSION['message'] = 'Gagal menambah user: ' . $conn->error;

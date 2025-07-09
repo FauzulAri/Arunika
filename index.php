@@ -43,6 +43,7 @@ while ($row = $tq->fetch_assoc()) {
     $terlaris[] = $row;
 }
 ?>
+
 <!-- HERO SECTION -->
 <section class="hero-arunika">
   <div class="hero-arunika-bg">
@@ -51,67 +52,75 @@ while ($row = $tq->fetch_assoc()) {
   <div class="hero-arunika-content">
     <h1 class="hero-arunika-title">Marketplace Furniture & Interior Terlengkap</h1>
     <p class="hero-arunika-subtitle">Temukan ribuan produk furniture berkualitas, promo menarik, dan inspirasi ruang impian Anda di Arunika Interior.</p>
-    <a href="/Arunika/view/user/product/furniture.php" class="hero-arunika-btn">Jelajahi Katalog</a>
-    <a href="#promo" class="hero-arunika-btn btn-outline">Lihat Promo</a>
+    <a href="/Arunika/view/user/product/furniture.php" class="hero-arunika-btn no-underline">Jelajahi Katalog</a>
+    <a href="#promo" class="hero-arunika-btn btn-outline no-underline">Lihat Promo</a>
 </div>
 </section>
+
 <!-- KATEGORI UTAMA -->
 <section class="kategori-arunika">
   <h2 class="section-title">Kategori Populer</h2>
   <div class="kategori-grid">
     <?php foreach ($kategori as $k): ?>
-      <a href="/Arunika/view/user/product/furniture.php?cat=<?= urlencode($k['nama_kategori']) ?>" class="kategori-card">
+      <a href="#furniture-section" class="kategori-card kategori-link" data-kategori="<?= htmlspecialchars($k['nama_kategori']) ?>">
         <div class="kategori-icon"><i class="fa <?= htmlspecialchars($k['icon']) ?>"></i></div>
         <div class="kategori-nama"><?= htmlspecialchars($k['nama_kategori']) ?></div>
       </a>
     <?php endforeach; ?>
                 </div>
 </section>
+
 <!-- PROMO/FLASH SALE -->
 <section class="promo-arunika" id="promo">
   <h2 class="section-title">Promo & Flash Sale</h2>
-  <div class="promo-grid">
-    <?php if (empty($promo)): ?>
-      <div class="text-center w-100">
-        <div class="alert alert-info">
-          <i class="fas fa-info-circle"></i> Belum ada promo aktif saat ini.
+  <div class="promo-carousel swiper">
+    <div class="swiper-wrapper">
+      <?php if (empty($promo)): ?>
+        <div class="swiper-slide w-100">
+          <div class="alert alert-info text-center"><i class="fas fa-info-circle"></i> Belum ada promo aktif saat ini.</div>
         </div>
+      <?php else: ?>
+        <?php foreach ($promo as $p): ?>
+          <div class="swiper-slide">
+            <a href="/Arunika/view/user/product/detail.php?id=<?= $p['furniture_id'] ?>&promo=1" class="promo-card" style="text-decoration:none;">
+              <img src="/Arunika/assets/img/<?= htmlspecialchars($p['gambar_furniture'] ?? 'noimage.jpg') ?>" alt="<?= htmlspecialchars($p['nama_furniture']) ?>">
+              <div class="promo-info">
+                <div class="promo-title"><i class="fa fa-bolt text-warning"></i> <?= htmlspecialchars($p['nama_furniture']) ?></div>
+                <div class="promo-price-old">Rp<?= number_format($p['harga_lama'],0,',','.') ?></div>
+                <div class="promo-badge">
+                  <?php if ($p['tipe'] == 'persen'): ?>
+                    Diskon <?= number_format($p['diskon_persen'],0) ?>%
+                  <?php else: ?>
+                    Hemat Rp<?= number_format($p['nilai'],0,',','.') ?>
+                  <?php endif; ?>
                 </div>
-    <?php else: ?>
-      <?php foreach (array_slice($promo,0,8) as $p): ?>
-        <div class="promo-card">
-          <img src="/Arunika/assets/img/<?= htmlspecialchars($p['gambar_furniture'] ?? 'noimage.jpg') ?>" alt="<?= htmlspecialchars($p['nama_furniture']) ?>">
-          <div class="promo-info">
-            <div class="promo-title"><?= htmlspecialchars($p['nama_furniture']) ?></div>
-            <div class="promo-price-old">Rp<?= number_format($p['harga_lama'],0,',','.') ?></div>
-            <div class="promo-badge">
-              <?php if ($p['tipe'] == 'persen'): ?>
-                Diskon <?= number_format($p['diskon_persen'],0) ?>%
-              <?php else: ?>
-                Hemat Rp<?= number_format($p['nilai'],0,',','.') ?>
-              <?php endif; ?>
+                <div class="promo-price">Rp<?= number_format($p['harga'],0,',','.') ?></div>
+                <div class="promo-keterangan"><?= htmlspecialchars($p['keterangan']) ?></div>
             </div>
-            <div class="promo-price">Rp<?= number_format($p['harga'],0,',','.') ?></div>
-            <div class="promo-keterangan"><?= htmlspecialchars($p['keterangan']) ?></div>
-            </div>
-        </div>
-      <?php endforeach; ?>
-    <?php endif; ?>
-                </div>
+            </a>
+                    </div>
+        <?php endforeach; ?>
+      <?php endif; ?>
+    </div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+</div>
 </section>
-<!-- PRODUK TERLARIS/UNGGULAN -->
-<section class="unggulan-arunika">
-  <h2 class="section-title">Produk Terlaris</h2>
+
+<!-- REKOMENDASI UNTUK ANDA -->
+<section class="unggulan-arunika" id="furniture-section">
+  <h2 class="section-title">Rekomendasi untuk Anda</h2>
   <div class="unggulan-grid">
-    <?php foreach (array_slice($terlaris,0,8) as $t): ?>
-      <div class="unggulan-card">
+    <?php foreach (array_slice($terlaris,0,15) as $t): ?>
+      <a href="/Arunika/view/user/product/detail.php?id=<?= $t['furniture_id'] ?>" class="unggulan-card" style="text-decoration:none; color:inherit;">
         <img src="/Arunika/assets/img/<?= htmlspecialchars($t['gambar_furniture'] ?? 'noimage.jpg') ?>" alt="<?= htmlspecialchars($t['nama_furniture']) ?>">
         <div class="unggulan-title"><?= htmlspecialchars($t['nama_furniture']) ?></div>
         <div class="unggulan-price">Rp<?= number_format($t['harga'],0,',','.') ?></div>
-            </div>
+      </a>
     <?php endforeach; ?>
-                    </div>
+            </div>
 </section>
+
 <!-- KEUNGGULAN/BENEFIT -->
 <section class="benefit-arunika">
   <h2 class="section-title">Kenapa Pilih Arunika?</h2>
@@ -120,8 +129,9 @@ while ($row = $tq->fetch_assoc()) {
     <div class="benefit-card"><i class="fa fa-shield-alt"></i><div>Garansi Produk</div></div>
     <div class="benefit-card"><i class="fa fa-th-large"></i><div>Pilihan Lengkap</div></div>
     <div class="benefit-card"><i class="fa fa-headset"></i><div>CS Ramah</div></div>
-                </div>
+        </div>
 </section>
+
 <!-- TESTIMONI/ULASAN -->
 <section class="testimoni-arunika">
   <h2 class="section-title">Apa Kata Pelanggan?</h2>
@@ -146,6 +156,7 @@ while ($row = $tq->fetch_assoc()) {
     </div>
 </div>
 </section>
+
 <!-- INSPIRASI RUANG (OPSIONAL) -->
 <section class="inspirasi-arunika">
   <h2 class="section-title">Inspirasi Ruang</h2>
@@ -156,6 +167,7 @@ while ($row = $tq->fetch_assoc()) {
     <div class="inspirasi-card"><img src="/Arunika/assets/img/interior5.jpg" alt="Inspirasi 4"><div>Sudut Kerja Fungsional</div></div>
   </div>
 </section>
+
 <style>
 .hero-arunika {
   position: relative;
@@ -196,6 +208,9 @@ while ($row = $tq->fetch_assoc()) {
   margin-bottom: 2rem;
   text-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
+.hero-arunika-btn, .hero-arunika-btn.btn-outline, .no-underline {
+  text-decoration: none !important;
+}
 .hero-arunika-btn {
   background: #FEA5AD;
   color: #fff;
@@ -217,6 +232,7 @@ while ($row = $tq->fetch_assoc()) {
   background: #e07b87;
   color: #fff;
 }
+
 .section-title {
   font-size: 2rem;
   font-weight: 600;
@@ -225,9 +241,10 @@ while ($row = $tq->fetch_assoc()) {
   color: #222;
   font-family: 'Sansita Swashed', cursive;
 }
+
 .kategori-arunika {
   background: #fff;
-  padding: 2rem 0 1rem 0;
+  padding: 2rem 0 2rem 0;
 }
 .kategori-grid {
   display: grid;
@@ -262,36 +279,34 @@ while ($row = $tq->fetch_assoc()) {
   font-size: 1.1rem;
   font-weight: 500;
 }
+
 .promo-arunika {
   background: #faece6;
-  padding: 2rem 0 1rem 0;
+  padding: 2rem 0 2rem 0;
 }
-.promo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
-  max-width: 1100px;
-  margin: 0 auto;
-}
+.promo-carousel { position:relative; }
+.promo-carousel .swiper-wrapper { display:flex; align-items:stretch; }
+.promo-carousel .swiper-slide { width:220px; max-width:90vw; margin-right: 0; }
 .promo-card {
   background: #fff;
-  border-radius: 16px;
+  border-radius: 14px;
   box-shadow: 0 2px 12px #0001;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 400px;
+  max-width: 240px;
+  margin: 0 auto;
+  padding-bottom: 1rem;
+  text-align: center;
 }
 .promo-card img {
   width: 100%;
-  height: 140px;
+  height: 260px;
   object-fit: cover;
 }
-.promo-info {
-  padding: 1rem;
-  width: 100%;
-  text-align: center;
-}
+.promo-info { padding: 0.8rem 0.7rem 0.5rem 0.7rem; width: 100%; }
 .promo-title {
   font-weight: 600;
   font-size: 1.1rem;
@@ -324,47 +339,66 @@ while ($row = $tq->fetch_assoc()) {
   font-style: italic;
   margin-top: 0.3rem;
 }
+
 .unggulan-arunika {
   background: #fff;
-  padding: 2rem 0 1rem 0;
+  padding: 2rem 0 2rem 0;
 }
 .unggulan-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  max-width: 1100px;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 2rem;
+  max-width: 1300px;
   margin: 0 auto;
 }
 .unggulan-card {
   background: #f7f7fa;
-  border-radius: 16px;
+  border-radius: 20px;
   box-shadow: 0 2px 12px #0001;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 1rem;
+  padding-bottom: 1.5rem;
+  min-height: 320px;
+  max-width: 260px;
+  margin: 0 auto;
+  transition: box-shadow 0.2s, transform 0.2s;
 }
 .unggulan-card img {
   width: 100%;
-  height: 120px;
+  height: 180px;
   object-fit: cover;
+  border-radius: 20px 20px 0 0;
 }
 .unggulan-title {
   font-weight: 600;
-  font-size: 1rem;
-  margin: 0.7rem 0 0.3rem 0;
+  font-size: 1.1rem;
+  margin: 1.2rem 0 0.5rem 0;
   text-align: center;
 }
 .unggulan-price {
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   color: #222;
   margin-bottom: 0.2rem;
+  text-align: center;
 }
+@media (max-width: 1200px) {
+  .unggulan-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .unggulan-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .unggulan-grid { grid-template-columns: 1fr; }
+  .unggulan-card { max-width: 100%; }
+}
+
 .benefit-arunika {
   background: #faece6;
-  padding: 2rem 0 1rem 0;
+  padding: 2rem 0 2rem 0;
 }
 .benefit-grid {
   display: flex;
@@ -398,9 +432,10 @@ while ($row = $tq->fetch_assoc()) {
   font-size: 1.1rem;
   font-weight: 500;
 }
+
 .testimoni-arunika {
   background: #fff;
-  padding: 2rem 0 1rem 0;
+  padding: 2rem 0 2rem 0;
 }
 .testimoni-grid {
   display: flex;
@@ -450,9 +485,10 @@ while ($row = $tq->fetch_assoc()) {
   color: #444;
   margin-bottom: 0.2rem;
 }
+
 .inspirasi-arunika {
   background: #faece6;
-  padding: 2rem 0 1rem 0;
+  padding: 2rem 0 2rem 0;
 }
 .inspirasi-grid {
   display: grid;
@@ -483,7 +519,31 @@ while ($row = $tq->fetch_assoc()) {
   text-align: center;
 }
 </style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<script>
+// Kategori Populer: filter dan scroll ke section furniture
+function filterFurnitureByKategori(kat) {
+  window.location.href = '/Arunika/view/user/product/furniture.php?cat=' + encodeURIComponent(kat);
+}
+document.querySelectorAll('.kategori-link').forEach(btn => {
+  btn.addEventListener('click', function(e){
+    e.preventDefault();
+    const kategori = this.getAttribute('data-kategori');
+    filterFurnitureByKategori(kategori);
+    });
+});
+// Swiper promo carousel
+var swiper = new Swiper('.promo-carousel', {
+  slidesPerView: 1,
+  spaceBetween: 8,
+  navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+  breakpoints: { 600: { slidesPerView: 2 }, 900: { slidesPerView: 3 }, 1200: { slidesPerView: 4 }, 1500: { slidesPerView: 5 } }
+});
+</script>
+
 <?php
 $content = ob_get_clean();
 include $_SERVER['DOCUMENT_ROOT'] . '/Arunika/view/user/master.php';
-?> 
+?>

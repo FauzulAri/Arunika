@@ -19,7 +19,7 @@ ob_start();
             Belum punya akun? <a href="/Arunika/view/auth/registeruser.php">Daftar di sini</a>
         </div>
         <div class="mt-2 text-center">
-            <a href="/Arunika/view/user/home/index.php">Kembali ke Beranda</a>
+            <a href="/Arunika/view/user/home/index.php">Kembali ke blablabla Beranda</a>
         </div>
     </div>
 </div>

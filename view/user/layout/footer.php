@@ -24,7 +24,7 @@
       <div class="footer-title">Kontak Kami</div>
       <ul class="footer-contact">
         <li><i class="fa fa-envelope"></i> arunika_interiors@gmail.com</li>
-        <li><i class="fa fa-whatsapp"></i> <a href="https://wa.me/6289618626231" target="_blank">(+62) 89618626231</a></li>
+        <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/6289618626231" target="_blank" style="color: #222; text-decoration: none;">(+62) 89618626231</a></li>
         <li><i class="fa fa-phone"></i> (+62) 81227251899</li>
       </ul>
     </div>

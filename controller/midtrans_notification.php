@@ -45,7 +45,7 @@ $stmt->close();
         $transaction_status == 'settlement' ||
         ($transaction_status == 'capture' && $fraud_status == 'accept')
     ) {
-        $stmt = $conn->prepare("UPDATE orders SET status_order = 'sedang diproses' WHERE nomor_order = ?");
+        $stmt = $conn->prepare("UPDATE orders SET status_order = 'sedang diproses' WHERE order_id = ?");
         $stmt->bind_param('s', $order_id_db);
         $stmt->execute();
 

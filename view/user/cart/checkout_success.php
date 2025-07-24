@@ -1,7 +1,7 @@
 <?php
 // Dummy data, nanti bisa diisi dari database berdasarkan order_id
 $order = [
-  'nomor_order' => isset($_GET['order_id']) ? $_GET['order_id'] : 'ORD-20240708-0001',
+  'order_id' => isset($_GET['order_id']) ? $_GET['order_id'] : 'ORD-20240708-0001',
   'tanggal_order' => date('Y-m-d H:i:s'),
   'total_harga' => 2500000,
   'status_order' => 'settlement',
@@ -16,7 +16,7 @@ $order = [
     <div class="card-body">
       <h5 class="card-title">Ringkasan Pesanan</h5>
       <ul class="list-group mb-3 text-start">
-        <li class="list-group-item"><b>No. Order:</b> <?= htmlspecialchars($order['nomor_order']) ?></li>
+        <li class="list-group-item"><b>No. Order:</b> <?= htmlspecialchars($order['order_id']) ?></li>
         <li class="list-group-item"><b>Tanggal:</b> <?= date('d M Y H:i', strtotime($order['tanggal_order'])) ?></li>
         <li class="list-group-item"><b>Total:</b> Rp<?= number_format($order['total_harga'],0,',','.') ?></li>
         <li class="list-group-item"><b>Status:</b> <span class="badge bg-success">Berhasil</span></li>

@@ -10,14 +10,14 @@ $user_id = $_SESSION['user_id'];
 ob_start();
 // Query pesanan user
 $orders = [];
-$stmt = $conn->prepare("SELECT order_id, nomor_order, tanggal_order, status_order, total_harga FROM orders WHERE user_id = ? ORDER BY tanggal_order DESC");
+$stmt = $conn->prepare("SELECT id_order, order_id, tanggal_order, status_order, total_harga FROM orders WHERE user_id = ? ORDER BY tanggal_order DESC");
 $stmt->bind_param('i', $user_id);
 $stmt->execute();
-$stmt->bind_result($order_id, $nomor_order, $tanggal_order, $status_order, $total_harga);
+$stmt->bind_result($id_order, $order_id, $tanggal_order, $status_order, $total_harga);
 while ($stmt->fetch()) {
     $orders[] = [
         'order_id' => $order_id,
-        'nomor_order' => $nomor_order,
+        'nomor_order' => $order_id,
         'tanggal_order' => $tanggal_order,
         'status_order' => $status_order,
         'total_harga' => $total_harga,
@@ -50,7 +50,7 @@ $stmt->close();
               <span class="badge bg-<?= $order['status_order']=='settlement'?'success':($order['status_order']=='pending'?'warning':'secondary') ?> me-2">
                 <?= ucfirst($order['status_order']=='settlement'?'Selesai':$order['status_order']) ?>
               </span>
-              <span class="text-muted small"><?= htmlspecialchars($order['nomor_order']) ?></span>
+              <span class="text-muted small"><?= htmlspecialchars($order['order_id']) ?></span>
             </div>
             <div class="d-flex align-items-center mb-2">
               <img src="/Arunika/assets/img/<?= htmlspecialchars($gambar_furniture ?? 'noimage.jpg') ?>" alt="<?= htmlspecialchars($nama_furniture) ?>" style="width:64px; height:64px; object-fit:cover; border-radius:8px; margin-right:16px;">

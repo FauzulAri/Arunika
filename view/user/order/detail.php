@@ -10,10 +10,10 @@ $user_id = $_SESSION['user_id'];
 $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
 
 // Ambil data order
-$stmt = $conn->prepare("SELECT nomor_order, tanggal_order, status_order, total_harga, metode_pembayaran, payment_link FROM orders WHERE order_id = ? AND user_id = ?");
+$stmt = $conn->prepare("SELECT order_id, tanggal_order, status_order, total_harga, metode_pembayaran, payment_link FROM orders WHERE id_order = ? AND user_id = ?");
 $stmt->bind_param('ii', $order_id, $user_id);
 $stmt->execute();
-$stmt->bind_result($nomor_order, $tanggal_order, $status_order, $total_harga, $metode_pembayaran, $payment_link);
+$stmt->bind_result($order_id, $tanggal_order, $status_order, $total_harga, $metode_pembayaran, $payment_link);
 if (!$stmt->fetch()) {
     $stmt->close();
     echo '<div class="container py-5 text-center"><div class="alert alert-danger">Pesanan tidak ditemukan.</div></div>';
@@ -46,7 +46,7 @@ $va_number = '1234567890123456';
   <div class="card mb-4">
     <div class="card-body">
       <div class="d-flex flex-wrap align-items-center mb-2">
-        <span class="fw-bold me-3">No. Order:</span> <span class="me-4"> <?= htmlspecialchars($nomor_order) ?> </span>
+        <span class="fw-bold me-3">No. Order:</span> <span class="me-4"> <?= htmlspecialchars($order_id) ?> </span>
         <span class="fw-bold me-3">Tanggal:</span> <span class="me-4"> <?= date('d M Y H:i', strtotime($tanggal_order)) ?> </span>
         <span class="badge bg-<?= $status_order=='settlement'?'success':($status_order=='pending'?'warning':'secondary') ?> ms-auto">
           <?= ucfirst($status_order=='settlement'?'Selesai':$status_order) ?>

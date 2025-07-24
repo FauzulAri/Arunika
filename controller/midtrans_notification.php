@@ -5,8 +5,36 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 // Konfigurasi server key Midtrans (sandbox/production)
 $server_key = 'Mid-server-vxsYmfYmV9JC_bpbCM3cV_C7'; // Ganti dengan server key kamu
 
-$json = file_get_contents('php://input');
-$notif = json_decode($json, true);
+// Ambil raw input
+$raw = file_get_contents('php://input');
+
+// Log raw input
+$log_text = 'RAW INPUT: ' . $raw;
+$stmt = $conn->prepare("INSERT INTO webhook_log (log_text) VALUES (?)");
+$stmt->bind_param('s', $log_text);
+$stmt->execute();
+$stmt->close();
+
+// Cek isi $_POST juga
+if (!empty($_POST)) {
+    $log_text = 'POST: ' . print_r($_POST, true);
+    $stmt = $conn->prepare("INSERT INTO webhook_log (log_text) VALUES (?)");
+    $stmt->bind_param('s', $log_text);
+    $stmt->execute();
+    $stmt->close();
+}
+
+$notif = json_decode($raw, true);
+if (!$notif) {
+    $log_text = 'JSON DECODE ERROR: ' . json_last_error_msg() . ' | RAW: ' . $raw;
+    $stmt = $conn->prepare("INSERT INTO webhook_log (log_text) VALUES (?)");
+    $stmt->bind_param('s', $log_text);
+    $stmt->execute();
+    $stmt->close();
+    http_response_code(400);
+    echo 'Invalid JSON';
+    exit();
+}
 
 $order_id = $notif['order_id'] ?? null;
 $status = $notif['transaction_status'] ?? null;
@@ -16,8 +44,8 @@ $status_code = $notif['status_code'] ?? null;
 $gross_amount = $notif['gross_amount'] ?? null;
 $signature_key = $notif['signature_key'] ?? null;
 
-// Simpan log ke tabel webhook_log
-$log_text = 'order_id: ' . $order_id . ' | status: ' . $status . ' | type: ' . $type . ' | fraud: ' . $fraud . ' | status_code: ' . $status_code . ' | gross_amount: ' . $gross_amount . ' | signature_key: ' . $signature_key . ' | raw: ' . $json;
+// Simpan log notifikasi terparse
+$log_text = 'order_id: ' . $order_id . ' | status: ' . $status . ' | type: ' . $type . ' | fraud: ' . $fraud . ' | status_code: ' . $status_code . ' | gross_amount: ' . $gross_amount . ' | signature_key: ' . $signature_key . ' | raw: ' . $raw;
 $stmt = $conn->prepare("INSERT INTO webhook_log (log_text) VALUES (?)");
 $stmt->bind_param('s', $log_text);
 $stmt->execute();
@@ -26,7 +54,6 @@ $stmt->close();
 // Validasi signature_key
 $expected_signature = hash('sha512', $order_id . $status_code . $gross_amount . $server_key);
 if ($signature_key !== $expected_signature) {
-    // Signature tidak valid, jangan proses update status
     http_response_code(403);
     echo 'Invalid signature';
     exit();

@@ -1,7 +1,7 @@
 <?php
 ob_start();
 include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
-$sql = "SELECT o.id_order, o.order_id, u.nama as nama_pemesan, o.alamat_pengiriman, o.tanggal_order, o.status_order 
+$sql = "SELECT o.order_id, o.nomor_order, u.nama as nama_pemesan, o.alamat_pengiriman, o.tanggal_order, o.status_order 
         FROM orders o 
         JOIN user u ON o.user_id = u.user_id 
         ORDER BY o.tanggal_order DESC";
@@ -23,8 +23,8 @@ $result = $conn->query($sql);
     <tbody>
         <?php if ($result && $result->num_rows > 0): while($row = $result->fetch_assoc()): ?>
         <tr>
-            <td><?= $row['id_order'] ?></td>
-            <td><?= htmlspecialchars($row['order_id']) ?></td>
+            <td><?= $row['order_id'] ?></td>
+            <td><?= htmlspecialchars($row['nomor_order']) ?></td>
             <td><?= htmlspecialchars($row['nama_pemesan']) ?></td>
             <td><?= htmlspecialchars($row['alamat_pengiriman']) ?></td>
             <td><?= htmlspecialchars($row['tanggal_order']) ?></td>

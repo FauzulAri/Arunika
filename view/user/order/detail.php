@@ -9,11 +9,11 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 $user_id = $_SESSION['user_id'];
 $order_id = isset($_GET['order_id']) ? $_GET['order_id'] : '';
 
-// Ambil data order
-$stmt = $conn->prepare("SELECT order_id, tanggal_order, status_order, total_harga, metode_pembayaran, payment_link FROM orders WHERE order_id = ? AND user_id = ?");
+// Ambil id_order dari order_id (string)
+$stmt = $conn->prepare("SELECT id_order, order_id, tanggal_order, status_order, total_harga, metode_pembayaran, payment_link FROM orders WHERE order_id = ? AND user_id = ?");
 $stmt->bind_param('si', $order_id, $user_id);
 $stmt->execute();
-$stmt->bind_result($order_id, $tanggal_order, $status_order, $total_harga, $metode_pembayaran, $payment_link);
+$stmt->bind_result($id_order, $order_id, $tanggal_order, $status_order, $total_harga, $metode_pembayaran, $payment_link);
 if (!$stmt->fetch()) {
     $stmt->close();
     echo '<div class="container py-5 text-center"><div class="alert alert-danger">Pesanan tidak ditemukan.</div></div>';
@@ -21,10 +21,10 @@ if (!$stmt->fetch()) {
 }
 $stmt->close();
 
-// Ambil detail barang
+// Ambil detail barang pakai id_order (INT)
 $items = [];
-$stmt = $conn->prepare("SELECT f.nama_furniture, f.gambar_furniture, d.jumlah, d.harga_satuan, d.subtotal FROM detail_order d JOIN furniture f ON d.furniture_id = f.furniture_id WHERE d.order_id = ?");
-$stmt->bind_param('s', $order_id);
+$stmt = $conn->prepare("SELECT f.nama_furniture, f.gambar_furniture, d.jumlah, d.harga_satuan, d.subtotal FROM detail_order d JOIN furniture f ON d.furniture_id = f.furniture_id WHERE d.id_order = ?");
+$stmt->bind_param('i', $id_order);
 $stmt->execute();
 $stmt->bind_result($nama_furniture, $gambar_furniture, $jumlah, $harga_satuan, $subtotal);
 while ($stmt->fetch()) {

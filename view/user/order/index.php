@@ -16,8 +16,8 @@ $stmt->execute();
 $stmt->bind_result($id_order, $order_id, $tanggal_order, $status_order, $total_harga);
 while ($stmt->fetch()) {
     $orders[] = [
+        'id_order' => $id_order, // tambahkan id_order
         'order_id' => $order_id,
-        'nomor_order' => $order_id,
         'tanggal_order' => $tanggal_order,
         'status_order' => $status_order,
         'total_harga' => $total_harga,
@@ -34,8 +34,8 @@ $stmt->close();
       <?php foreach ($orders as $order): ?>
         <?php
         // Ambil 1 produk utama dari detail_order
-        $q = $conn->prepare("SELECT d.jumlah, d.harga_satuan, f.nama_furniture, f.gambar_furniture, f.furniture_id FROM detail_order d JOIN furniture f ON d.furniture_id = f.furniture_id WHERE d.order_id = ? LIMIT 1");
-        $q->bind_param('i', $order['order_id']);
+        $q = $conn->prepare("SELECT d.jumlah, d.harga_satuan, f.nama_furniture, f.gambar_furniture, f.furniture_id FROM detail_order d JOIN furniture f ON d.furniture_id = f.furniture_id WHERE d.id_order = ? LIMIT 1");
+        $q->bind_param('i', $order['id_order']);
         $q->execute();
         $q->bind_result($jumlah, $harga_satuan, $nama_furniture, $gambar_furniture, $furniture_id);
         $q->fetch();

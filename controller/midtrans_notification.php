@@ -8,15 +8,19 @@ $notif = json_decode($json, true);
 $order_id = $notif['order_id'] ?? null;
 $status = $notif['transaction_status'] ?? null;
 
-// Logging sederhana untuk debug
-file_put_contents(__DIR__ . '/webhook_debug.log', date('c') . " | order_id: $order_id | status: $status\n", FILE_APPEND);
+// Simpan log ke tabel webhook_log
+$log_text = 'order_id: ' . $order_id . ' | status: ' . $status . ' | raw: ' . $json;
+$stmt = $conn->prepare("INSERT INTO webhook_log (log_text) VALUES (?)");
+$stmt->bind_param('s', $log_text);
+$stmt->execute();
+$stmt->close();
 
 if ($order_id && $status) {
+    // Ambil bagian sebelum tanda strip (jika ada)
+    $order_id_db = explode('-', $order_id)[0];
     $stmt = $conn->prepare("UPDATE orders SET status_order = ? WHERE order_id = ?");
-    $stmt->bind_param('ss', $status, $order_id);
+    $stmt->bind_param('ss', $status, $order_id_db);
     $stmt->execute();
-    // Log hasil update
-    file_put_contents(__DIR__ . '/webhook_debug.log', date('c') . " | Updated $order_id to $status, affected: {$stmt->affected_rows}\n", FILE_APPEND);
     $stmt->close();
 }
 

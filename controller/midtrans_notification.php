@@ -1,69 +1,24 @@
 <?php
-// midtrans_notification.php
-
-// Ambil data notifikasi dari Midtrans
-$json = file_get_contents('php://input');
-
-// Log data mentah
-$log_text = "RAW JSON: $json";
-$stmt = $conn->prepare("INSERT INTO webhook_log (log_text) VALUES (?)");
-$stmt->bind_param('s', $log_text);
-$stmt->execute();
-$stmt->close();
-
-$notif = json_decode($json, true);
-
-// Koneksi ke database
+// Midtrans Webhook Notification Handler
 include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 
-// Ambil order_id dan status dari notifikasi
+$json = file_get_contents('php://input');
+$notif = json_decode($json, true);
+
 $order_id = $notif['order_id'] ?? null;
-$transaction_status = $notif['transaction_status'] ?? null;
-$fraud_status = $notif['fraud_status'] ?? null;
+$status = $notif['transaction_status'] ?? null;
 
-// --- DEBUG: Simpan log ke database ---
-$log_text = "order_id dari notif: $order_id\ntransaction_status: $transaction_status\nfraud_status: $fraud_status\n";
-$stmt = $conn->prepare("INSERT INTO webhook_log (log_text) VALUES (?)");
-$stmt->bind_param('s', $log_text);
-$stmt->execute();
-$stmt->close();
-// --- END DEBUG ---
+// Logging sederhana untuk debug
+file_put_contents(__DIR__ . '/webhook_debug.log', date('c') . " | order_id: $order_id | status: $status\n", FILE_APPEND);
 
-
-    // Ambil bagian sebelum tanda strip (jika ada)
-    $order_id_db = explode('-', $order_id)[0];
-
-    // --- DEBUG: Simpan log order_id_db ke database ---
-    $log_text = "order_id_db: $order_id_db\n";
-    $stmt = $conn->prepare("INSERT INTO webhook_log (log_text) VALUES (?)");
-    $stmt->bind_param('s', $log_text);
+if ($order_id && $status) {
+    $stmt = $conn->prepare("UPDATE orders SET status_order = ? WHERE order_id = ?");
+    $stmt->bind_param('ss', $status, $order_id);
     $stmt->execute();
+    // Log hasil update
+    file_put_contents(__DIR__ . '/webhook_debug.log', date('c') . " | Updated $order_id to $status, affected: {$stmt->affected_rows}\n", FILE_APPEND);
     $stmt->close();
-    // --- END DEBUG ---
+}
 
-    if (
-        $transaction_status == 'settlement' ||
-        ($transaction_status == 'capture' && $fraud_status == 'accept')
-    ) {
-        $stmt = $conn->prepare("UPDATE orders SET status_order = 'sedang diproses' WHERE order_id = ?");
-        $stmt->bind_param('s', $order_id_db);
-        $stmt->execute();
-
-        // --- DEBUG: Simpan hasil update ke database ---
-        if ($stmt->affected_rows > 0) {
-            $log_text = "Update sukses untuk $order_id_db\n";
-        } else {
-            $log_text = "Update GAGAL untuk $order_id_db\n";
-        }
-        $stmt->close();
-
-        $stmt = $conn->prepare("INSERT INTO webhook_log (log_text) VALUES (?)");
-        $stmt->bind_param('s', $log_text);
-        $stmt->execute();
-        $stmt->close();
-        // --- END DEBUG ---
-    }
-
-
-http_response_code(200); // Beri response OK ke Midtrans
+http_response_code(200);
 echo 'OK';

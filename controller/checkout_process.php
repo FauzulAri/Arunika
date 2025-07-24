@@ -56,21 +56,21 @@ $nama_penerima = $_POST['nama_penerima'] ?? $nama;
 $no_hp_penerima = $_POST['no_hp_penerima'] ?? $no_hp;
 $catatan = $_POST['catatan'] ?? '';
 
-// Generate nomor_order sesuai format Midtrans
-$nomor_order = 'ORD' . date('YmdHis') . rand(1000,9999);
+// Generate order_id sesuai format Midtrans
+$order_id = 'ORD' . date('YmdHis') . rand(1000,9999);
 
-// Insert ke database dengan nomor_order tersebut
+// Insert ke database dengan order_id tersebut
 $status_order = 'pending';
-$stmt = $conn->prepare("INSERT INTO orders (user_id, nomor_order, total_harga, status_order, metode_pembayaran, alamat_pengiriman, nama_penerima, no_hp_penerima, catatan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param('isdssssss', $user_id, $nomor_order, $total, $status_order, $metode_pembayaran, $alamat_pengiriman, $nama_penerima, $no_hp_penerima, $catatan);
+$stmt = $conn->prepare("INSERT INTO orders (user_id, order_id, total_harga, status_order, metode_pembayaran, alamat_pengiriman, nama_penerima, no_hp_penerima, catatan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param('isdssssss', $user_id, $order_id, $total, $status_order, $metode_pembayaran, $alamat_pengiriman, $nama_penerima, $no_hp_penerima, $catatan);
 $stmt->execute();
-$new_order_id = $stmt->insert_id;
+$new_id_order = $stmt->insert_id;
 $stmt->close();
 
 // Pindahkan item keranjang ke detail_order
 foreach ($items as $item) {
-    $stmt = $conn->prepare("INSERT INTO detail_order (order_id, furniture_id, jumlah, harga_satuan, subtotal) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param('iiidd', $new_order_id, $item['furniture_id'], $item['jumlah'], $item['harga'], $item['subtotal']);
+    $stmt = $conn->prepare("INSERT INTO detail_order (id_order, furniture_id, jumlah, harga_satuan, subtotal) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param('iiidd', $new_id_order, $item['furniture_id'], $item['jumlah'], $item['harga'], $item['subtotal']);
     $stmt->execute();
     $stmt->close();
 }
@@ -94,7 +94,7 @@ $item_details = array_map(function($item) {
 // Data untuk Payment Link API
 $data = [
     "transaction_details" => [
-        "order_id" => $nomor_order,
+        "order_id" => $order_id,
         "gross_amount" => (int)$total,
         "payment_type" => $metode_pembayaran,
         "status" => "pending"
@@ -118,7 +118,7 @@ $data = [
         "address" => $alamat_pengiriman
     ],
     "callbacks" => [
-        "finish" => "http://arunika.42web.io/Arunika/view/user/order/index.php?nomor_order=" . $nomor_order
+        "finish" => "http://arunika.42web.io/Arunika/view/user/order/index.php?order_id=" . $order_id
     ]
 ];
 
@@ -148,8 +148,8 @@ $result = json_decode($response, true);
 if (isset($result['payment_url'])) {
     $payment_link = $result['payment_url'];
     // Simpan payment_link ke database
-    $stmt = $conn->prepare("UPDATE orders SET payment_link = ? WHERE order_id = ?");
-    $stmt->bind_param('si', $payment_link, $new_order_id);
+    $stmt = $conn->prepare("UPDATE orders SET payment_link = ? WHERE id_order = ?");
+    $stmt->bind_param('si', $payment_link, $new_id_order);
     $stmt->execute();
     $stmt->close();
 

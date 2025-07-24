@@ -118,7 +118,7 @@ $data = [
         "address" => $alamat_pengiriman
     ],
     "callbacks" => [
-        "finish" => "http://arunika.42web.io/Arunika/view/user/order/index.php?order_id=" . $order_id
+        "finish" => "http://arunika.42web.io/Arunika/controller/checkout_process.php?order_id=" . $order_id . "&midtrans_finish=1"
     ]
 ];
 
@@ -164,4 +164,17 @@ if (isset($result['payment_url'])) {
     } else {
         die('Gagal membuat payment link: ' . htmlspecialchars($response));
     }
+} 
+
+// SEMENTARA: Jika user diarahkan kembali dari Midtrans (parameter midtrans_finish), update status_order menjadi 'sedang diproses'
+// TODO: HAPUS kode ini dan kembalikan ke integrasi webhook Midtrans setelah presentasi!
+if (isset($_GET['order_id']) && isset($_GET['midtrans_finish']) && $_GET['midtrans_finish'] == '1') {
+    $order_id = $_GET['order_id'];
+    $stmt = $conn->prepare("UPDATE orders SET status_order = 'sedang diproses' WHERE order_id = ?");
+    $stmt->bind_param('s', $order_id);
+    $stmt->execute();
+    $stmt->close();
+    // Redirect ke halaman detail pesanan
+    header('Location: /Arunika/view/user/order/detail.php?order_id=' . urlencode($order_id));
+    exit();
 } 

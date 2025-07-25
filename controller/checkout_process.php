@@ -153,13 +153,6 @@ if (isset($result['payment_url'])) {
     $stmt->execute();
     $stmt->close();
 
-    // SEMENTARA: Update status_order menjadi 'sedang diproses' setelah payment_url berhasil dibuat
-    // TODO: HAPUS kode ini setelah integrasi webhook Midtrans aktif!
-    $stmt = $conn->prepare("UPDATE orders SET status_order = 'sedang diproses' WHERE id_order = ?");
-    $stmt->bind_param('i', $new_id_order);
-    $stmt->execute();
-    $stmt->close();
-
     // Redirect ke payment link
     header('Location: /Arunika/view/user/order/index.php');
     exit();

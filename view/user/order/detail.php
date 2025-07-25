@@ -40,6 +40,18 @@ $stmt->close();
 
 // Dummy nomor VA (bisa diambil dari tabel pembayaran jika sudah diintegrasi)
 $va_number = '1234567890123456';
+
+// SEMENTARA: Update status_order menjadi 'sedang diproses' saat user klik tombol bayar
+// TODO: HAPUS kode ini setelah integrasi webhook Midtrans aktif!
+if (isset($_GET['pay_now']) && $_GET['pay_now'] == '1' && $status_order == 'pending' && !empty($payment_link)) {
+    $stmt = $conn->prepare("UPDATE orders SET status_order = 'sedang diproses' WHERE order_id = ? AND user_id = ?");
+    $stmt->bind_param('si', $order_id, $user_id);
+    $stmt->execute();
+    $stmt->close();
+    // Redirect ke payment link Midtrans
+    header('Location: ' . $payment_link);
+    exit();
+}
 ?>
 <div class="container py-4">
   <h2 class="mb-4">Detail Pesanan</h2>
@@ -58,7 +70,7 @@ $va_number = '1234567890123456';
           <div class="alert alert-info mb-2">
             <b>Pembayaran Belum Selesai</b><br>
             Silakan klik tombol di bawah untuk melanjutkan pembayaran:<br>
-            <a href="<?= htmlspecialchars($payment_link) ?>" target="_blank" class="btn btn-success mt-2">Bayar Sekarang via Midtrans</a>
+            <a href="detail.php?order_id=<?= urlencode($order_id) ?>&pay_now=1" class="btn btn-success mt-2">Bayar Sekarang via Midtrans</a>
           </div>
         <?php else: ?>
           <div class="alert alert-warning mb-2">

@@ -1,20 +1,17 @@
 <?php
 ob_start();
 include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
-$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$stmt = $conn->prepare("SELECT * FROM orders WHERE order_id = ?");
-$stmt->bind_param('i', $id);
+$id_order = intval($_GET['id']);
+$stmt = $conn->prepare("SELECT * FROM orders WHERE id_order = ?");
+$stmt->bind_param('i', $id_order);
 $stmt->execute();
-$res = $stmt->get_result();
-if ($res->num_rows < 1) {
-    echo '<div class="alert alert-danger">Order tidak ditemukan.</div>';
-    exit;
-}
-$order = $res->fetch_assoc();
+$result = $stmt->get_result();
+$order = $result->fetch_assoc();
+$stmt->close();
 ?>
 <h2>Edit Order</h2>
 <form action="/Arunika/controller/order_edit_process.php" method="post" class="mb-4" autocomplete="off">
-  <input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
+  <input type="hidden" name="id_order" value="<?= $order['id_order'] ?>">
   <div class="mb-3">
     <label class="form-label">Status Order</label>
     <select class="form-select" name="status_order" required>

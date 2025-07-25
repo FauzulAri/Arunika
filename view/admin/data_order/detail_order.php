@@ -7,10 +7,10 @@ if (!isset($_GET['id'])) {
     exit;
 }
 
-$order_id = intval($_GET['id']);
-$sql = "SELECT * FROM orders WHERE order_id = ?";
+$id_order = intval($_GET['id']);
+$sql = "SELECT * FROM orders WHERE id_order = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param('i', $order_id);
+$stmt->bind_param('i', $id_order);
 $stmt->execute();
 $result = $stmt->get_result();
 $order = $result->fetch_assoc();

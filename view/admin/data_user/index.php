@@ -12,7 +12,7 @@ $result = $conn->query($sql);
     <!-- <a href="tambah.php" class="btn btn-success">Tambah User</a> -->
 </div>
 <table class="table table-bordered table-hover">
-    <thead class="table-dark">
+    <thead class="table-primary">
         <tr>
             <th>No</th>
             <th>Nama</th>
@@ -31,8 +31,8 @@ $result = $conn->query($sql);
             <td><?= htmlspecialchars($row['tanggal_daftar']) ?></td>
             <td><?= htmlspecialchars($row['alamat']) ?></td>
             <td>
-                <a href="edit.php?id=<?= $row['user_id'] ?>" class="btn btn-sm btn-warning">Edit</a>
-                <a href="/Arunika/controller/user_delete_process.php?id=<?= $row['user_id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus user?')">Hapus</a>
+                <a href="edit.php?id=<?= $row['user_id'] ?>" class="btn btn-warning">Edit</a>
+                <!-- Hapus tombol hapus user -->
             </td>
         </tr>
         <?php endwhile; else: ?>

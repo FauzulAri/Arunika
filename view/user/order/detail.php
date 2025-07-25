@@ -64,13 +64,12 @@ if (isset($_GET['pay_now']) && $_GET['pay_now'] == '1' && $status_order == 'pend
           <?= ucfirst($status_order=='settlement'?'Selesai':$status_order) ?>
         </span>
       </div>
-      <div class="mb-2"><b>Metode Pembayaran:</b> <?= htmlspecialchars($metode_pembayaran) ?></div>
       <?php if ($status_order == 'pending'): ?>
         <?php if (!empty($payment_link)): ?>
           <div class="alert alert-info mb-2">
             <b>Pembayaran Belum Selesai</b><br>
             Silakan klik tombol di bawah untuk melanjutkan pembayaran:<br>
-            <a href="detail.php?order_id=<?= urlencode($order_id) ?>&pay_now=1" class="btn btn-success mt-2">Bayar Sekarang via Midtrans</a>
+            <a href="detail.php?order_id=<?= urlencode($order_id) ?>&pay_now=1" class="btn btn-success mt-2">Bayar Sekarang</a>
           </div>
         <?php else: ?>
           <div class="alert alert-warning mb-2">

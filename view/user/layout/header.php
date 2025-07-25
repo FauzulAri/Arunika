@@ -87,7 +87,7 @@
                     <li class="nav-item"><a class="nav-link" href="#tentang">Tentang Kami</a></li>
                 </ul>
                 <form class="d-flex mx-auto search-bar" role="search" action="/Arunika/view/user/product/furniture.php" method="get">
-                    <input class="form-control me-2" type="search" name="q" placeholder="Cari produk..." aria-label="Search">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Cari produk..." aria-label="Search" required>
                     <button class="btn btn-outline-light" type="submit"><i class="fa fa-search"></i></button>
                 </form>
                 <div class="d-flex align-items-center gap-2 ms-auto">

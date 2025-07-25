@@ -5,14 +5,31 @@ if(session_status() == PHP_SESSION_NONE){
 // Include koneksi database
 include_once $_SERVER['DOCUMENT_ROOT'] . '/Arunika/config/connect.php';
 
-// Query untuk mengambil semua data furniture dengan join kategori
-$query = "SELECT f.*, k.nama_kategori FROM furniture f LEFT JOIN kategori k ON f.kategori_id = k.kategori_id WHERE f.is_active = TRUE ORDER BY f.furniture_id DESC";
-$result = $conn->query($query);
-
-// Ambil semua data ke array
-$furnitures = [];
-while ($row = $result->fetch_assoc()) {
-    $furnitures[] = $row;
+$keyword = isset($_GET['q']) ? trim($_GET['q']) : '';
+if ($keyword !== '') {
+    // Query pencarian produk
+    $stmt = $conn->prepare("SELECT f.*, k.nama_kategori FROM furniture f LEFT JOIN kategori k ON f.kategori_id = k.kategori_id WHERE f.is_active = TRUE AND (f.nama_furniture LIKE ? OR f.deskripsi LIKE ?) ORDER BY f.furniture_id DESC");
+    $like = '%' . $keyword . '%';
+    $stmt->bind_param('ss', $like, $like);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $furnitures = [];
+    while ($row = $result->fetch_assoc()) {
+        $furnitures[] = $row;
+    }
+    $stmt->close();
+    $judul = 'Menampilkan pencarian produk "' . htmlspecialchars($keyword) . '"';
+    $show_kategori = false;
+} else {
+    // Query untuk mengambil semua data furniture dengan join kategori
+    $query = "SELECT f.*, k.nama_kategori FROM furniture f LEFT JOIN kategori k ON f.kategori_id = k.kategori_id WHERE f.is_active = TRUE ORDER BY f.furniture_id DESC";
+    $result = $conn->query($query);
+    $furnitures = [];
+    while ($row = $result->fetch_assoc()) {
+        $furnitures[] = $row;
+    }
+    $judul = 'Pilihan Furniture';
+    $show_kategori = true;
 }
 
 ob_start();
@@ -29,8 +46,9 @@ ob_start();
 
 <!-- Grid Gambar Furniture -->
 <div class="hero2-section-v2">
-    <div class="hero2-title-v2">Pilihan Furniture</div>
+    <div class="hero2-title-v2"><?= $judul ?></div>
     <!-- Filter Kategori -->
+    <?php if ($show_kategori): ?>
     <div class="text-center mb-4">
         <div class="btn-group" role="group" aria-label="Filter Kategori">
             <button type="button" class="btn btn-outline-primary active" data-filter="all">Semua</button>
@@ -43,6 +61,7 @@ ob_start();
             <button type="button" class="btn btn-outline-primary" data-filter="Lainnya">Lainnya</button>
         </div>
     </div>
+    <?php endif; ?>
     <div class="designer-grid-section">
         <div id="furniture-list" class="designer-grid furniture-grid-5"></div>
             </div>
@@ -261,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const catParam = urlParams.get('cat');
     let initialFilter = 'all';
     
-    if (catParam) {
+    if (catParam && <?= $show_kategori ? 'true' : 'false' ?>) {
         // Cari tombol filter yang sesuai kategori
         filterButtons.forEach(btn => {
             if (btn.getAttribute('data-filter') === catParam) {
@@ -273,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         filtered = furnitures.filter(f => f.nama_kategori === catParam);
     } else {
-        filterButtons[0].classList.add('active');
+        filterButtons[0]?.classList.add('active');
         filtered = furnitures;
     }
     currentPage = 1;

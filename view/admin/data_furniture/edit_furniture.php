@@ -59,6 +59,10 @@ while ($row = $kq->fetch_assoc()) {
                             <label for="deskripsi" class="form-label">Deskripsi</label>
                             <textarea class="form-control" id="deskripsi" name="deskripsi" rows="4" placeholder="Deskripsi furniture..."><?= htmlspecialchars($furniture['deskripsi']) ?></textarea>
                         </div>
+                        <div class="mb-3">
+                            <label for="stok" class="form-label">Stok <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="stok" name="stok" value="<?= (int)$furniture['stok'] ?>" required min="0">
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <div class="mb-3">

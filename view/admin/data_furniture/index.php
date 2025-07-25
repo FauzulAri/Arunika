@@ -51,6 +51,7 @@ ob_start();
                             <th>Nama Furniture</th>
                             <th>Kategori</th>
                             <th>Harga</th>
+                            <th>Stok</th>
                             <th>Deskripsi</th>
                             <th>Aksi</th>
                         </tr>
@@ -78,6 +79,7 @@ ob_start();
                                 <span class="badge bg-info"><?= htmlspecialchars($row['nama_kategori']) ?></span>
                             </td>
                             <td>Rp <?= number_format($row['harga'], 0, ',', '.') ?></td>
+                            <td><?= (int)$row['stok'] ?></td>
                             <td>
                                 <?= strlen($row['deskripsi']) > 50 ? substr(htmlspecialchars($row['deskripsi']), 0, 50) . '...' : htmlspecialchars($row['deskripsi']) ?>
                             </td>

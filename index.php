@@ -50,8 +50,8 @@ while ($row = $tq->fetch_assoc()) {
     <img src="/Arunika/assets/img/interior1.jpg" alt="Hero Arunika"/>
     </div>
   <div class="hero-arunika-content">
-    <h1 class="hero-arunika-title">Marketplace Furniture & Interior Terlengkap</h1>
-    <p class="hero-arunika-subtitle">Temukan ribuan produk furniture berkualitas, promo menarik, dan inspirasi ruang impian Anda di Arunika Interior.</p>
+    <h1 class="hero-arunika-title">Wujudkan Rumah Impian dengan Furniture Berkualitas</h1>
+    <p class="hero-arunika-subtitle">Bingung memilih furniture yang tepat? Arunika menghadirkan koleksi furniture terkurasi untuk berbagai gaya interior. Nikmati proses belanja yang mudah, aman, dan praktis. Mulai jelajahi katalog kami sekarang!</p>
     <a href="/Arunika/view/user/product/furniture.php" class="hero-arunika-btn no-underline">Jelajahi Katalog</a>
     <a href="#promo" class="hero-arunika-btn btn-outline no-underline">Lihat Promo</a>
 </div>
@@ -72,7 +72,8 @@ while ($row = $tq->fetch_assoc()) {
 
 <!-- PROMO/FLASH SALE -->
 <section class="promo-arunika" id="promo">
-  <h2 class="section-title">Promo & Flash Sale</h2>
+  <h2 class="section-title">Promo Terbatas - Jangan Sampai Kehabisan!</h2>
+  <p class="promo-subtitle">Dapatkan diskon hingga 50% untuk furniture pilihan. Harga terbaik, kualitas terjamin!</p>
   <div class="promo-carousel swiper">
     <div class="swiper-wrapper">
       <?php if (empty($promo)): ?>
@@ -109,7 +110,8 @@ while ($row = $tq->fetch_assoc()) {
 
 <!-- REKOMENDASI UNTUK ANDA -->
 <section class="unggulan-arunika" id="furniture-section">
-  <h2 class="section-title">Rekomendasi untuk Anda</h2>
+  <h2 class="section-title">Produk Terpilih untuk Hunian Anda</h2>
+  <p class="rekomendasi-subtitle">Koleksi furniture berkualitas tinggi yang telah dikurasi khusus untuk memenuhi kebutuhan interior modern</p>
   <div class="unggulan-grid">
     <?php foreach (array_slice($terlaris,0,15) as $t): ?>
       <a href="/Arunika/view/user/product/detail.php?id=<?= $t['furniture_id'] ?>" class="unggulan-card" style="text-decoration:none; color:inherit;">
@@ -123,18 +125,35 @@ while ($row = $tq->fetch_assoc()) {
 
 <!-- KEUNGGULAN/BENEFIT -->
 <section class="benefit-arunika">
-  <h2 class="section-title">Kenapa Pilih Arunika?</h2>
+  <h2 class="section-title">Keunggulan Arunika Interior</h2>
   <div class="benefit-grid">
-    <div class="benefit-card"><i class="fa fa-truck"></i><div>Gratis Ongkir</div></div>
-    <div class="benefit-card"><i class="fa fa-shield-alt"></i><div>Garansi Produk</div></div>
-    <div class="benefit-card"><i class="fa fa-th-large"></i><div>Pilihan Lengkap</div></div>
-    <div class="benefit-card"><i class="fa fa-headset"></i><div>CS Ramah</div></div>
+    <div class="benefit-card">
+      <i class="fa fa-truck"></i>
+      <div class="benefit-title">Gratis Ongkir</div>
+      <div class="benefit-desc">Pengiriman gratis ke seluruh Indonesia</div>
+    </div>
+    <div class="benefit-card">
+      <i class="fa fa-shield-alt"></i>
+      <div class="benefit-title">Garansi Produk</div>
+      <div class="benefit-desc">Jaminan kualitas dan keamanan transaksi</div>
+    </div>
+    <div class="benefit-card">
+      <i class="fa fa-th-large"></i>
+      <div class="benefit-title">Pilihan Lengkap</div>
+      <div class="benefit-desc">Ribuan produk furniture terkurasi</div>
+    </div>
+    <div class="benefit-card">
+      <i class="fa fa-headset"></i>
+      <div class="benefit-title">CS Ramah</div>
+      <div class="benefit-desc">Layanan pelanggan 24/7 siap membantu</div>
+    </div>
         </div>
 </section>
 
 <!-- TESTIMONI/ULASAN -->
 <section class="testimoni-arunika">
-  <h2 class="section-title">Apa Kata Pelanggan?</h2>
+  <h2 class="section-title">Masih Ragu dengan Kualitas Kami?</h2>
+  <p class="testimoni-subtitle">Lihat bagaimana ribuan pelanggan puas dengan pengalaman belanja di Arunika</p>
   <div class="testimoni-grid">
     <div class="testimoni-card">
       <img src="/Arunika/assets/img/person1.jpg" class="testimoni-img" alt="User 1">
@@ -284,6 +303,15 @@ while ($row = $tq->fetch_assoc()) {
   background: #faece6;
   padding: 2rem 0 2rem 0;
 }
+.promo-subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .promo-carousel { position:relative; }
 .promo-carousel .swiper-wrapper { display:flex; align-items:stretch; }
 .promo-carousel .swiper-slide { width:220px; max-width:90vw; margin-right: 0; }
@@ -343,6 +371,15 @@ while ($row = $tq->fetch_assoc()) {
 .unggulan-arunika {
   background: #fff;
   padding: 2rem 0 2rem 0;
+}
+.rekomendasi-subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .unggulan-grid {
   display: grid;
@@ -421,21 +458,42 @@ while ($row = $tq->fetch_assoc()) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 160px;
+  min-width: 200px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.benefit-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px #0002;
 }
 .benefit-card i {
   font-size: 2.2rem;
   margin-bottom: 0.7rem;
 }
-.benefit-card div {
+.benefit-title {
   color: #222;
   font-size: 1.1rem;
-  font-weight: 500;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.benefit-desc {
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 400;
+  line-height: 1.4;
 }
 
 .testimoni-arunika {
   background: #fff;
   padding: 2rem 0 2rem 0;
+}
+.testimoni-subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .testimoni-grid {
   display: flex;

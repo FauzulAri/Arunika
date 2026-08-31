@@ -88,8 +88,8 @@ if ($order_id && $status) {
     } else if ($status == 'deny') {
         $stmt = $conn->prepare("UPDATE orders SET status_order = 'deny' WHERE order_id = ?");
         $stmt->bind_param('s', $order_id_db);
-        $stmt->execute();
-        $stmt->close();
+    $stmt->execute();
+    $stmt->close();
     } else if ($status == 'expire') {
         $stmt = $conn->prepare("UPDATE orders SET status_order = 'expire' WHERE order_id = ?");
         $stmt->bind_param('s', $order_id_db);
@@ -101,7 +101,7 @@ if ($order_id && $status) {
         $stmt->execute();
         $stmt->close();
     }
-}
+    }
 
 http_response_code(200);
 echo 'OK';

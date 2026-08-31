@@ -21,12 +21,12 @@ if ($keyword !== '') {
     $judul = 'Menampilkan pencarian produk "' . htmlspecialchars($keyword) . '"';
     $show_kategori = false;
 } else {
-    // Query untuk mengambil semua data furniture dengan join kategori
-    $query = "SELECT f.*, k.nama_kategori FROM furniture f LEFT JOIN kategori k ON f.kategori_id = k.kategori_id WHERE f.is_active = TRUE ORDER BY f.furniture_id DESC";
-    $result = $conn->query($query);
-    $furnitures = [];
-    while ($row = $result->fetch_assoc()) {
-        $furnitures[] = $row;
+// Query untuk mengambil semua data furniture dengan join kategori
+$query = "SELECT f.*, k.nama_kategori FROM furniture f LEFT JOIN kategori k ON f.kategori_id = k.kategori_id WHERE f.is_active = TRUE ORDER BY f.furniture_id DESC";
+$result = $conn->query($query);
+$furnitures = [];
+while ($row = $result->fetch_assoc()) {
+    $furnitures[] = $row;
     }
     $judul = 'Pilihan Furniture';
     $show_kategori = true;
